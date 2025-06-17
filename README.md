@@ -1,7 +1,6 @@
 # Shivani Singh - Portfolio Website
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Available-brightgreen)](https://my-portfolio-url.onrender.com)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Responsive](https://img.shields.io/badge/Responsive-Yes-success)](https://my-portfolio-url.onrender.com)
 
 > Modern, responsive portfolio website showcasing AI/ML engineering expertise, full-stack development skills, and innovative project work.
@@ -52,12 +51,11 @@ A **Full Stack Developer** with 3+ years of experience building production appli
 portfolio/
 ├── index.html              # Main portfolio page
 ├── resume/
-│   └── Resume_SSingh_US.pdf # Downloadable resume
+│   └── my_resume.pdf # Downloadable resume
 ├── assets/
 │   ├── images/             # Portfolio images
 │   └── icons/              # Custom icons
 ├── README.md               # This file
-└── LICENSE                 # MIT License
 ```
 
 ## Quick Start (to use this template)
@@ -142,10 +140,6 @@ The portfolio includes comprehensive analytics to track:
 - **Social sharing** optimized with Open Graph tags
 - **Mobile-first** indexing ready
 - **Core Web Vitals** optimized for performance
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Connect
 
