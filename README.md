@@ -1,6 +1,15 @@
-## 👋 About
+# Shivani Singh - Portfolio Website
 
-Professional portfolio website for **Shivani Singh**, a Full Stack Developer with 3+ years of experience building production applications and scalable infrastructure. Currently pursuing a Doctorate in Business Administration with a focus on Business Intelligence & Data Analytics.
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Available-brightgreen)](https://my-portfolio-url.onrender.com)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Responsive](https://img.shields.io/badge/Responsive-Yes-success)](https://my-portfolio-url.onrender.com)
+
+> Modern, responsive portfolio website showcasing AI/ML engineering expertise, full-stack development skills, and innovative project work.
+
+## 👋 About
+A **Full Stack Developer** with 3+ years of experience building production applications and scalable infrastructure. Currently pursuing a Doctorate in Business Administration with a focus on Business Intelligence & Data Analytics.
+
+**Available for full-time opportunities in AI/ML engineering and full-stack development roles.**
 
 ## Features
 
@@ -51,7 +60,37 @@ portfolio/
 └── LICENSE                 # MIT License
 ```
 
-## 📱 Responsive Design
+## Quick Start (to use this template)
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/shsingh844/portfolio.git
+   cd portfolio
+   ```
+
+2. **Setup Google Analytics (Optional)**
+   - Get your GA4 Measurement ID
+   - Replace `GA_MEASUREMENT_ID` in `index.html` with your actual ID
+
+3. **Add your resume**
+   - Create `/resume/` folder
+   - Add your PDF resume as `my_resume.pdf`
+
+4. **Deploy**
+   - **Render**: Connect GitHub repo → Auto-deploy
+   - **Netlify**: Drag & drop folder or connect repo
+   - **Vercel**: Import GitHub repository
+
+## Customization
+
+Easy to customize for your use:
+1. Update personal information in `index.html`
+2. Replace project details and links
+3. Modify the color scheme in CSS variables
+4. Add your own Google Analytics ID
+5. Update resume and contact information
+  
+## Responsive Design
 
 The portfolio is fully responsive and optimized for:
 - Mobile devices (320px+)
@@ -117,6 +156,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Star this repo if you found it helpful!**
-
-> Looking for opportunities in AI/ML engineering and full-stack development. Open to remote work (US) and on-site positions in the Bay Area and the United Kingdom.
+> **Open to Opportunities:** AI/ML engineering and full-stack development positions
+> - 🇺🇸 **US**: Remote work and Bay Area on-site roles (CPT authorized)
+> - 🇬🇧 **UK**: London-based positions with skilled worker visa sponsorship
