@@ -31,22 +31,8 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"></noscript>
     
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'GA_MEASUREMENT_ID');
-        
-        // Custom events for portfolio interactions
-        function trackEvent(action, category, label) {
-            gtag('event', action, {
-                event_category: category,
-                event_label: label
-            });
-        }
-    </script>
+    <!-- Dynamic Google Analytics - No hardcoded IDs -->
+    <!-- GA will be loaded dynamically by JavaScript below -->
     <style>
         * {
             margin: 0;
@@ -549,10 +535,43 @@
             color: #666;
             font-size: 0.9rem;
         }
+        /* Analytics Status */
+        .analytics-status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .analytics-status.loaded {
+            background: rgba(76, 175, 80, 0.8);
+        }
+
+        .analytics-status.error {
+            background: rgba(244, 67, 54, 0.8);
+        }
+
+        @media (max-width: 768px) {
+            .analytics-status {
+                bottom: 10px;
+                right: 10px;
+                font-size: 0.7rem;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Analytics Status Indicator -->
+        <div id="analytics-status" class="analytics-status">
+            Analytics Loading...
+        </div>
         <!-- Header -->
         <div class="header">
             <div class="profile-img">SS</div>
@@ -911,6 +930,115 @@
     </div>
 
     <script>
+        // Configuration Management
+        class AnalyticsConfig {
+            constructor() {
+                this.measurementId = this.getMeasurementId();
+                this.isLoaded = false;
+                this.statusElement = document.getElementById('analytics-status');
+            }
+
+            getMeasurementId() {
+                // Get GA ID from build process (environment variable)
+                const GA_ID = '{{GA_MEASUREMENT_ID}}';
+                
+                // URL parameter override for testing
+                const urlParams = new URLSearchParams(window.location.search);
+                const gaParam = urlParams.get('ga_id');
+                
+                if (gaParam) {
+                    console.log('Using GA ID from URL parameter');
+                    return gaParam;
+                }
+
+                // Use the GA ID from environment variable
+                if (GA_ID && GA_ID !== 'GA_NOT_SET' && GA_ID.startsWith('G-')) {
+                    console.log('Using GA ID from environment variable');
+                    return GA_ID;
+                }
+
+                // Development mode
+                console.log('Development mode - GA tracking disabled');
+                return null;
+            }
+
+            updateStatus(message, type = 'default') {
+                if (this.statusElement) {
+                    this.statusElement.textContent = message;
+                    this.statusElement.className = `analytics-status ${type}`;
+                    
+                    // Auto-hide after 3 seconds if successful
+                    if (type === 'loaded') {
+                        setTimeout(() => {
+                            this.statusElement.style.opacity = '0';
+                            setTimeout(() => {
+                                this.statusElement.style.display = 'none';
+                            }, 300);
+                        }, 3000);
+                    }
+                }
+            }
+
+            async loadGoogleAnalytics() {
+                if (!this.measurementId) {
+                    this.updateStatus('🔧 Development Mode', 'default');
+                    return false;
+                }
+
+                try {
+                    // Load gtag script
+                    const script = document.createElement('script');
+                    script.async = true;
+                    script.src = `https://www.googletagmanager.com/gtag/js?id=${this.measurementId}`;
+                    document.head.appendChild(script);
+
+                    // Initialize gtag
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){dataLayer.push(arguments);}
+                    gtag('js', new Date());
+                    gtag('config', this.measurementId);
+
+                    // Make gtag globally available
+                    window.gtag = gtag;
+
+                    this.isLoaded = true;
+                    this.updateStatus('✅ Analytics Active', 'loaded');
+                    
+                    // Send initial page view
+                    this.trackEvent('page_view', 'engagement', 'initial_load');
+                    
+                    return true;
+                } catch (error) {
+                    console.error('Failed to load Google Analytics:', error);
+                    this.updateStatus('❌ Analytics Failed', 'error');
+                    return false;
+                }
+            }
+
+            trackEvent(action, category, label) {
+                if (this.isLoaded && window.gtag) {
+                    window.gtag('event', action, {
+                        event_category: category,
+                        event_label: label,
+                        page_title: document.title,
+                        page_location: window.location.href
+                    });
+                    console.log(`📊 Event tracked: ${action} | ${category} | ${label}`);
+                } else {
+                    console.log(`📊 Event would be tracked: ${action} | ${category} | ${label}`);
+                }
+            }
+        }
+
+        // Initialize analytics
+        const analytics = new AnalyticsConfig();
+        
+        // Global trackEvent function for onclick handlers
+        function trackEvent(action, category, label) {
+            analytics.trackEvent(action, category, label);
+        }
+
+        // Navigation function
         function showSection(sectionId) {
             // Hide all sections
             const sections = document.querySelectorAll('.section');
@@ -929,21 +1057,36 @@
             
             // Add active class to the clicked button
             event.target.classList.add('active');
-        }
-        
-        // Optional: Add smooth scrolling to top when section changes
-        function scrollToTop() {
+            
+            // Scroll to top smoothly
             window.scrollTo({
                 top: 0,
                 behavior: 'smooth'
             });
         }
-        
-        // Add scroll to top when switching sections
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                setTimeout(scrollToTop, 100);
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            analytics.loadGoogleAnalytics();
+            
+            // Track how long user stays on page
+            let startTime = Date.now();
+            window.addEventListener('beforeunload', () => {
+                const timeSpent = Math.round((Date.now() - startTime) / 1000);
+                analytics.trackEvent('timing_complete', 'engagement', `${timeSpent}_seconds`);
             });
+        });
+
+        // Track scroll depth
+        let maxScroll = 0;
+        window.addEventListener('scroll', () => {
+            const scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+            if (scrollPercent > maxScroll) {
+                maxScroll = scrollPercent;
+                if (maxScroll % 25 === 0) { // Track at 25%, 50%, 75%, 100%
+                    analytics.trackEvent('scroll', 'engagement', `${maxScroll}_percent`);
+                }
+            }
         });
     </script>
 </body>
