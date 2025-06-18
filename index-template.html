@@ -564,6 +564,130 @@
                 font-size: 0.7rem;
             }
         }
+
+        .resume-section {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .resume-downloads {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .resume-download {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333 !important;
+            padding: 15px 20px;
+            border-radius: 15px;
+            font-weight: 500;
+            transition: all 0.4s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 2px solid transparent;
+            backdrop-filter: blur(10px);
+            min-width: 200px;
+        }
+
+        .resume-download.recommended {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white !important;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        .resume-download.recommended .resume-details strong::after {
+            content: " (Recommended)";
+            font-size: 0.8em;
+            opacity: 0.9;
+        }
+
+        .resume-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .resume-download.recommended:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.5);
+        }
+
+        .resume-flag {
+            font-size: 1.5em;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .resume-details {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+        }
+
+        .resume-details strong {
+            font-size: 0.95em;
+            margin-bottom: 2px;
+        }
+
+        .resume-details small {
+            opacity: 0.8;
+            font-size: 0.75em;
+            line-height: 1.2;
+        }
+
+        .resume-smart-indicator {
+            font-size: 0.85em;
+            color: #666;
+            font-style: italic;
+            min-height: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .resume-smart-indicator.success {
+            color: #4CAF50;
+            font-weight: 500;
+        }
+
+        .resume-smart-indicator.fallback {
+            color: #FF9800;
+        }
+
+        /* Loading animation */
+        .loading-dots {
+            animation: loadingDots 1.5s infinite;
+        }
+
+        @keyframes loadingDots {
+            0%, 20% { opacity: 1; }
+            50% { opacity: 0.5; }
+            80%, 100% { opacity: 1; }
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .resume-downloads {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .resume-download {
+                width: 100%;
+                max-width: 280px;
+                justify-content: center;
+                text-align: center;
+            }
+            
+            .resume-details {
+                align-items: center;
+                text-align: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -590,9 +714,39 @@
                 <a href="https://github.com/shsingh844" class="contact-item" target="_blank" onclick="trackEvent('click', 'social', 'github')">
                     <span>💻</span> GitHub
                 </a>
-                <a href="/resume/Resume_SSingh_US.pdf" class="contact-item resume-download" target="_blank" onclick="trackEvent('download', 'resume', 'pdf')">
-                    <span>📄</span> Download Resume
-                </a>
+                
+                <!-- Smart Resume Download Section -->
+                <div class="resume-section">
+                    <div class="resume-downloads">
+                        <a href="/resume/Resume_SSingh_US.pdf" 
+                        class="contact-item resume-download resume-us" 
+                        target="_blank" 
+                        onclick="trackEvent('download', 'resume', 'us_pdf')"
+                        data-resume-type="us">
+                            <span class="resume-flag">🇺🇸</span>
+                            <div class="resume-details">
+                                <strong>US Resume</strong>
+                                <small>American English, US market optimized</small>
+                            </div>
+                        </a>
+                        
+                        <a href="/resume/Resume_SSingh_UK.pdf" 
+                        class="contact-item resume-download resume-uk" 
+                        target="_blank" 
+                        onclick="trackEvent('download', 'resume', 'uk_pdf')"
+                        data-resume-type="uk">
+                            <span class="resume-flag">🇬🇧</span>
+                            <div class="resume-details">
+                                <strong>UK Resume</strong>
+                                <small>British English, visa sponsorship noted</small>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <div class="resume-smart-indicator" id="resume-indicator">
+                        <span class="loading-dots">🔍 Detecting optimal format</span>
+                    </div>
+                </div>
             </div>
             <div class="status-badge">Available for Full-Time Opportunities</div>
         </div>
@@ -1087,6 +1241,280 @@
                     analytics.trackEvent('scroll', 'engagement', `${maxScroll}_percent`);
                 }
             }
+        });
+
+        class SmartResumeDetector {
+            constructor() {
+                this.detectionMethods = [];
+                this.recommendation = null;
+                this.confidence = 0;
+            }
+
+            async detectOptimalResume() {
+                const indicator = document.getElementById('resume-indicator');
+                
+                try {
+                    // Method 1: Timezone Analysis (Most reliable)
+                    this.analyzeTimezone();
+                    
+                    // Method 2: Language Preferences
+                    this.analyzeLanguage();
+                    
+                    // Method 3: URL Hints and Referrer
+                    this.analyzeURLContext();
+                    
+                    // Method 4: Browser/System Hints
+                    this.analyzeSystemHints();
+                    
+                    // Make final recommendation
+                    this.recommendation = this.calculateRecommendation();
+                    
+                    // Apply recommendation to UI
+                    this.applyRecommendation();
+                    
+                    // Update indicator
+                    this.updateIndicator(indicator, true);
+                    
+                    // Track analytics
+                    this.trackDetection();
+                    
+                } catch (error) {
+                    console.warn('Resume detection failed:', error);
+                    this.handleFallback(indicator);
+                }
+            }
+
+            analyzeTimezone() {
+                try {
+                    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                    console.log('🌍 Detected timezone:', timezone);
+                    
+                    // UK and Ireland timezones
+                    const ukTimezones = [
+                        'Europe/London',
+                        'Europe/Dublin',
+                        'Europe/Belfast',
+                        'GB',
+                        'GB-Eire'
+                    ];
+                    
+                    if (ukTimezones.some(tz => timezone.includes(tz))) {
+                        this.detectionMethods.push({
+                            method: 'timezone',
+                            result: 'uk',
+                            confidence: 0.8,
+                            details: timezone
+                        });
+                    } else if (timezone.includes('America/') || timezone.includes('US/')) {
+                        this.detectionMethods.push({
+                            method: 'timezone',
+                            result: 'us',
+                            confidence: 0.7,
+                            details: timezone
+                        });
+                    }
+                } catch (error) {
+                    console.warn('Timezone detection failed:', error);
+                }
+            }
+
+            analyzeLanguage() {
+                try {
+                    const languages = [
+                        navigator.language,
+                        ...(navigator.languages || [])
+                    ].filter(Boolean);
+                    
+                    console.log('🗣️ Detected languages:', languages);
+                    
+                    const hasUKEnglish = languages.some(lang => 
+                        lang === 'en-GB' || lang.startsWith('en-GB')
+                    );
+                    
+                    const hasUSEnglish = languages.some(lang => 
+                        lang === 'en-US' || lang.startsWith('en-US')
+                    );
+                    
+                    if (hasUKEnglish) {
+                        this.detectionMethods.push({
+                            method: 'language',
+                            result: 'uk',
+                            confidence: 0.6,
+                            details: languages[0]
+                        });
+                    } else if (hasUSEnglish) {
+                        this.detectionMethods.push({
+                            method: 'language',
+                            result: 'us',
+                            confidence: 0.5,
+                            details: languages[0]
+                        });
+                    }
+                } catch (error) {
+                    console.warn('Language detection failed:', error);
+                }
+            }
+
+            analyzeURLContext() {
+                try {
+                    const url = new URL(window.location.href);
+                    const referrer = document.referrer;
+                    
+                    // Check URL parameters
+                    if (url.searchParams.get('region') === 'uk' || url.searchParams.get('uk') === 'true') {
+                        this.detectionMethods.push({
+                            method: 'url_param',
+                            result: 'uk',
+                            confidence: 0.9,
+                            details: 'URL parameter'
+                        });
+                    }
+                    
+                    // Check referrer domain
+                    if (referrer && referrer.includes('.uk')) {
+                        this.detectionMethods.push({
+                            method: 'referrer',
+                            result: 'uk',
+                            confidence: 0.4,
+                            details: 'UK domain referrer'
+                        });
+                    }
+                } catch (error) {
+                    console.warn('URL context analysis failed:', error);
+                }
+            }
+
+            analyzeSystemHints() {
+                try {
+                    // Check for UK-specific system settings
+                    const dateFormat = new Intl.DateTimeFormat().format(new Date());
+                    const numberFormat = new Intl.NumberFormat().format(1234.56);
+                    
+                    // UK typically uses DD/MM/YYYY and different number formatting
+                    if (dateFormat.match(/^\d{1,2}\/\d{1,2}\/\d{4}$/) && 
+                        numberFormat.includes(',') && numberFormat.includes('.')) {
+                        
+                        this.detectionMethods.push({
+                            method: 'system_format',
+                            result: 'uk',
+                            confidence: 0.3,
+                            details: `Date: ${dateFormat}, Number: ${numberFormat}`
+                        });
+                    }
+                } catch (error) {
+                    console.warn('System hints analysis failed:', error);
+                }
+            }
+
+            calculateRecommendation() {
+                if (this.detectionMethods.length === 0) {
+                    return { type: 'us', confidence: 0, method: 'default_fallback' };
+                }
+
+                // Weight and sum confidence scores
+                const ukScore = this.detectionMethods
+                    .filter(m => m.result === 'uk')
+                    .reduce((sum, m) => sum + m.confidence, 0);
+                    
+                const usScore = this.detectionMethods
+                    .filter(m => m.result === 'us')
+                    .reduce((sum, m) => sum + m.confidence, 0);
+
+                console.log('📊 Detection scores - UK:', ukScore, 'US:', usScore);
+
+                if (ukScore > usScore && ukScore > 0.4) {
+                    return { 
+                        type: 'uk', 
+                        confidence: ukScore,
+                        method: this.detectionMethods.find(m => m.result === 'uk').method
+                    };
+                } else if (usScore > 0.3) {
+                    return { 
+                        type: 'us', 
+                        confidence: usScore,
+                        method: this.detectionMethods.find(m => m.result === 'us').method
+                    };
+                } else {
+                    return { type: 'us', confidence: 0, method: 'low_confidence_fallback' };
+                }
+            }
+
+            applyRecommendation() {
+                const usBtn = document.querySelector('[data-resume-type="us"]');
+                const ukBtn = document.querySelector('[data-resume-type="uk"]');
+                
+                if (!usBtn || !ukBtn) return;
+
+                // Remove any existing recommendations
+                usBtn.classList.remove('recommended');
+                ukBtn.classList.remove('recommended');
+
+                // Apply recommendation
+                if (this.recommendation.type === 'uk') {
+                    ukBtn.classList.add('recommended');
+                    // Move to front
+                    ukBtn.parentNode.insertBefore(ukBtn, usBtn);
+                } else {
+                    usBtn.classList.add('recommended');
+                    // Ensure US is first
+                    usBtn.parentNode.insertBefore(usBtn, ukBtn);
+                }
+
+                console.log(`✅ Recommended: ${this.recommendation.type.toUpperCase()} resume (${this.recommendation.method})`);
+            }
+
+            updateIndicator(indicator, success) {
+                if (!indicator) return;
+
+                if (success && this.recommendation) {
+                    const methodName = this.recommendation.method.replace('_', ' ');
+                    const confidenceText = this.recommendation.confidence > 0.6 ? 'high confidence' : 
+                                        this.recommendation.confidence > 0.3 ? 'medium confidence' : 'low confidence';
+                    
+                    indicator.innerHTML = `✨ Recommended ${this.recommendation.type.toUpperCase()} format (detected via ${methodName}, ${confidenceText})`;
+                    indicator.className = 'resume-smart-indicator success';
+                    
+                    // Hide after 4 seconds
+                    setTimeout(() => {
+                        indicator.style.opacity = '0';
+                        setTimeout(() => indicator.style.display = 'none', 300);
+                    }, 4000);
+                } else {
+                    indicator.innerHTML = '⚡ Both formats available - choose based on your region';
+                    indicator.className = 'resume-smart-indicator fallback';
+                }
+            }
+
+            handleFallback(indicator) {
+                console.log('🔄 Using fallback: US resume default');
+                this.recommendation = { type: 'us', confidence: 0, method: 'error_fallback' };
+                this.applyRecommendation();
+                this.updateIndicator(indicator, false);
+                this.trackDetection();
+            }
+
+            trackDetection() {
+                if (window.analytics && window.analytics.trackEvent) {
+                    // Track the recommendation
+                    analytics.trackEvent('smart_resume', 'recommendation', 
+                        `${this.recommendation.type}_${this.recommendation.method}_${this.recommendation.confidence.toFixed(2)}`);
+                    
+                    // Track all detection methods used
+                    this.detectionMethods.forEach(method => {
+                        analytics.trackEvent('smart_resume', 'detection_method', 
+                            `${method.method}_${method.result}_${method.confidence.toFixed(2)}`);
+                    });
+                }
+            }
+        }
+
+        // Initialize smart resume detection when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            // Small delay to ensure analytics is loaded
+            setTimeout(() => {
+                const detector = new SmartResumeDetector();
+                detector.detectOptimalResume();
+            }, 500);
         });
     </script>
 </body>
