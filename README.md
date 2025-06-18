@@ -2,10 +2,11 @@
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Available-brightgreen)](https://my-portfolio-url.onrender.com)
 [![Responsive](https://img.shields.io/badge/Responsive-Yes-success)](https://my-portfolio-url.onrender.com)
+[![Secure](https://img.shields.io/badge/Analytics-Secure-blue)](https://github.com/shsingh844/portfolio)
 
-> Modern, responsive portfolio website showcasing AI/ML engineering expertise, full-stack development skills, and innovative project work.
+> Modern, responsive portfolio website showcasing AI/ML engineering expertise, full-stack development skills, and innovative project work with production-grade security.
 
-## 👋 About
+## About
 A **Full Stack Developer** with 3+ years of experience building production applications and scalable infrastructure. Currently pursuing a Doctorate in Business Administration with a focus on Business Intelligence & Data Analytics.
 
 **Available for full-time opportunities in AI/ML engineering and full-stack development roles.**
@@ -25,8 +26,9 @@ A **Full Stack Developer** with 3+ years of experience building production appli
 - Semantic HTML structure
 - Fast loading with optimized assets
 
-### **Analytics Ready**
-- Google Analytics 4 integration
+### **Secure Analytics**
+- **Production-grade security** - No secrets in code
+- Google Analytics 4 integration with environment variables
 - Custom event tracking for user interactions
 - Portfolio engagement metrics
 - Contact and project interaction tracking
@@ -41,53 +43,114 @@ A **Full Stack Developer** with 3+ years of experience building production appli
 
 - **Frontend**: HTML5, CSS3, Vanilla JavaScript
 - **Styling**: Custom CSS with modern features (Grid, Flexbox, Backdrop Filters)
-- **Analytics**: Google Analytics 4
-- **Deployment**: Render (or any static hosting service)
+- **Analytics**: Google Analytics 4 (securely configured)
+- **Build System**: Node.js with environment variable injection
+- **Deployment**: Render with automated builds
 - **Version Control**: Git & GitHub
 
 ## Project Structure
 
 ```
 portfolio/
-├── index.html              # Main portfolio page
+├── index-template.html     # Source template (tracked in git)
+├── index.html              # Generated file (ignored by git)
+├── build.js                # Build script for environment variables
+├── package.json            # Node.js dependencies and scripts
+├── package-lock.json       # Dependency lock file
+├── .gitignore             # Secure git configuration
 ├── resume/
 │   └── my_resume.pdf # Downloadable resume
 ├── assets/
 │   ├── images/             # Portfolio images
 │   └── icons/              # Custom icons
-├── README.md               # This file
+└── README.md               # This file
 ```
 
-## Quick Start (to use this template)
+## Quick Start (Development)
 
+### **Prerequisites**
+- Node.js (any recent version)
+- Git
+
+### **Local Development**
 1. **Clone the repository**
    ```bash
    git clone https://github.com/shsingh844/portfolio.git
    cd portfolio
    ```
 
-2. **Setup Google Analytics (Optional)**
-   - Get your GA4 Measurement ID
-   - Replace `GA_MEASUREMENT_ID` in `index.html` with your actual ID
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-3. **Add your resume**
-   - Create `/resume/` folder
-   - Add your PDF resume as `my_resume.pdf`
+3. **Build for development**
+   ```bash
+   # Without analytics (development mode)
+   npm run build
+   
+   # With analytics (testing)
+   GA_MEASUREMENT_ID=your-ga-id npm run build
+   ```
 
-4. **Deploy**
-   - **Render**: Connect GitHub repo → Auto-deploy
-   - **Netlify**: Drag & drop folder or connect repo
-   - **Vercel**: Import GitHub repository
+4. **View locally**
+   ```bash
+   # Open index.html in browser or use local server
+   python3 -m http.server 8000
+   # Visit http://localhost:8000
+   ```
+
+## Production Deployment
+
+### **Render (Recommended)**
+1. **Fork this repository**
+2. **Connect to Render**
+   - Create new Static Site
+   - Connect your GitHub repository
+3. **Configure Build Settings**
+   - **Build Command**: `npm run build`
+   - **Publish Directory**: `.`
+4. **Add Environment Variable**
+   - **Key**: `GA_MEASUREMENT_ID`
+   - **Value**: Your Google Analytics 4 Measurement ID (e.g., `G-XXXXXXXXXX`)
+5. **Deploy** - Automatic deployment on every push!
+
+### **Other Platforms**
+- **Netlify**: Same build command, add environment variable in dashboard
+- **Vercel**: Configure build settings and environment variables
+- **GitHub Pages**: Requires workflow modification for build step
+
+## Security Features
+
+This portfolio implements **production-grade security**:
+
+- ✅ **No secrets in code** - Analytics ID stored as environment variable
+- ✅ **Generated builds** - Source template separate from deployed file
+- ✅ **Secure git** - `.gitignore` prevents committing sensitive files
+- ✅ **Environment-based config** - Different settings for dev/prod
+
+### **How it works:**
+1. **`index-template.html`** contains placeholder `{{GA_MEASUREMENT_ID}}`
+2. **Build script** replaces placeholder with environment variable
+3. **Generated `index.html`** has real analytics ID
+4. **Git tracks template only** - no secrets in repository
 
 ## Customization
 
-Easy to customize for your use:
-1. Update personal information in `index.html`
-2. Replace project details and links
-3. Modify the color scheme in CSS variables
-4. Add your own Google Analytics ID
-5. Update resume and contact information
-  
+### **For Your Own Portfolio:**
+1. **Fork the repository**
+2. **Update personal information** in `index-template.html`
+3. **Replace project details** and links
+4. **Modify color scheme** in CSS variables
+5. **Add your resume** to `/resume/` folder
+6. **Configure analytics** with your GA4 Measurement ID
+7. **Deploy** with environment variable configuration
+
+### **Key Files to Modify:**
+- `index-template.html` - All content and styling
+- `package.json` - Project metadata
+- `README.md` - Documentation
+
 ## Responsive Design
 
 The portfolio is fully responsive and optimized for:
@@ -133,6 +196,11 @@ The portfolio includes comprehensive analytics to track:
 - Resume download metrics
 - Project demo engagement
 
+**Privacy-conscious implementation:**
+- Analytics only loads in production
+- Graceful degradation when disabled
+- User-friendly status indicators
+
 ## SEO Features
 
 - **Meta descriptions** optimized for AI Engineer keywords
@@ -140,6 +208,30 @@ The portfolio includes comprehensive analytics to track:
 - **Social sharing** optimized with Open Graph tags
 - **Mobile-first** indexing ready
 - **Core Web Vitals** optimized for performance
+
+## Development Notes
+
+### **Build System**
+```bash
+# Development build (no analytics)
+npm run build
+
+# Production build (with analytics)
+GA_MEASUREMENT_ID=G-XXXXXXXXXX npm run build
+
+# File watching (for development)
+# Add to package.json if needed
+```
+
+### **Environment Variables**
+- `GA_MEASUREMENT_ID` - Google Analytics 4 Measurement ID
+- Automatically handled by hosting platforms
+- Fallback to development mode if not set
+
+### **Browser Support**
+- Modern browsers (ES6+)
+- CSS Grid and Flexbox support
+- Backdrop filter support (graceful degradation)
 
 ## Connect
 
@@ -152,4 +244,8 @@ The portfolio includes comprehensive analytics to track:
 
 > **Open to Opportunities:** AI/ML engineering and full-stack development positions
 > - 🇺🇸 **US**: Remote work and Bay Area on-site roles (CPT authorized)
-> - 🇬🇧 **UK**: London-based positions with skilled worker visa sponsorship
+> - 🇬🇧 **UK**: London-based positions with skilled worker visa sponsorship (required)
+
+---
+
+**If you found this portfolio template helpful, please consider giving it a star!**
