@@ -1,9 +1,9 @@
 # Shivani Singh - Portfolio Website
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Available-brightgreen)](https://shivani-singh-portfolio.onrender.com/)
-[![Responsive](https://img.shields.io/badge/Responsive-Yes-success)](https://shivani-singh-portfolio.onrender.com/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Available-brightgreen)](https://my-portfolio-url.onrender.com)
+[![Responsive](https://img.shields.io/badge/Responsive-Yes-success)](https://my-portfolio-url.onrender.com)
 [![Secure](https://img.shields.io/badge/Analytics-Secure-blue)](https://github.com/shsingh844/portfolio)
-[![Smart Detection](https://img.shields.io/badge/Smart%20Resume-AI%20Powered-purple)](https://github.com/shsingh844/portfolio)
+[![Smart Detection](https://img.shields.io/badge/Smart%20Detection-Intelligent-purple)](https://github.com/shsingh844/portfolio)
 
 > Modern, responsive portfolio website showcasing AI/ML engineering expertise, full-stack development skills, and innovative project work with production-grade security and intelligent user experience.
 
@@ -13,28 +13,6 @@ A **Full Stack Developer** with 3+ years of experience building production appli
 **Available for full-time opportunities in AI/ML engineering and full-stack development roles.**
 
 ## Features
-
-### **Smart Resume Detection System**
-AI-powered system that automatically detects the optimal resume format for each visitor:
-
-- **Geographic Intelligence**: Analyzes timezone and location data
-- **Language Preferences**: Detects browser language settings
-- **Context Awareness**: Evaluates URL parameters and referrer data
-- **Real-time Adaptation**: Instantly highlights the recommended format
-- **Analytics Integration**: Tracks detection accuracy and user preferences
-
-**How it works:**
-- Visitors from UK/Europe automatically see UK resume highlighted
-- US-based users get US format recommendations
-- Confidence scoring ensures accurate recommendations
-- Fallback handling for edge cases
-- Privacy-conscious detection methods
-
-### **Dual Resume System**
-- **🇺🇸 US Resume**: American English, US market optimized
-- **🇬🇧 UK Resume**: British English, visa sponsorship noted
-- Smart recommendation with visual indicators
-- One-click downloads with analytics tracking
 
 ### **Modern Design**
 - Glassmorphism UI with smooth animations
@@ -64,6 +42,28 @@ AI-powered system that automatically detects the optimal resume format for each 
 - Optimized animations and transitions
 - Lazy loading for non-critical resources
 
+### **Smart Resume Detection System**
+Intelligent algorithm that automatically detects the optimal resume format for each visitor using browser APIs and geographic analysis:
+
+- **Geographic Intelligence**: Analyzes timezone and location data
+- **Language Preferences**: Detects browser language settings
+- **Context Awareness**: Evaluates URL parameters and referrer data
+- **Real-time Adaptation**: Instantly highlights the recommended format
+- **Analytics Integration**: Tracks detection accuracy and user preferences
+
+**How it works:**
+- Visitors from UK/Europe automatically see UK resume highlighted
+- US-based users get US format recommendations
+- Confidence scoring ensures accurate recommendations
+- Fallback handling for edge cases
+- Privacy-conscious detection methods
+
+### **Dual Resume System**
+- **🇺🇸 US Resume**: American English, US market optimized
+- **🇬🇧 UK Resume**: British English, visa sponsorship noted
+- Smart recommendation with visual indicators
+- One-click downloads with analytics tracking
+
 ## Tech Stack
 
 - **Frontend**: HTML5, CSS3, Vanilla JavaScript
@@ -85,8 +85,8 @@ portfolio/
 ├── package-lock.json       # Dependency lock file
 ├── .gitignore             # Secure git configuration
 ├── resume/
-│   ├── my_resume_US.pdf  # US market optimized resume
-│   └── my_resume_UK.pdf  # UK market optimized resume
+│   ├── Resume_SSingh_US.pdf  # US market optimized resume
+│   └── Resume_SSingh_UK.pdf  # UK market optimized resume
 ├── assets/
 │   ├── images/             # Portfolio images
 │   └── icons/              # Custom icons
