@@ -1,7 +1,7 @@
 # Shivani Singh - Portfolio Website
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Available-brightgreen)](https://my-portfolio-url.onrender.com)
-[![Responsive](https://img.shields.io/badge/Responsive-Yes-success)](https://my-portfolio-url.onrender.com)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Available-brightgreen)](https://shivani-singh-portfolio.onrender.com/)
+[![Responsive](https://img.shields.io/badge/Responsive-Yes-success)](https://shivani-singh-portfolio.onrender.com/)
 [![Secure](https://img.shields.io/badge/Analytics-Secure-blue)](https://github.com/shsingh844/portfolio)
 [![Smart Detection](https://img.shields.io/badge/Smart%20Detection-Intelligent-purple)](https://github.com/shsingh844/portfolio)
 
@@ -346,7 +346,7 @@ curl -H "Accept-Language: en-GB" http://localhost:8000
 - 💼 [LinkedIn](https://linkedin.com/in/shivani-singh13)
 - 💻 [GitHub](https://github.com/shsingh844)
 - 📧 [Email](mailto:shsingh844@gmail.com)
-- 🌐 [Portfolio](https://my-portfolio-url.onrender.com)
+- 🌐 [Portfolio](https://shivani-singh-portfolio.onrender.com/)
 
 ---
 
