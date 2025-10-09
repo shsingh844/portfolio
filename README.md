@@ -10,7 +10,7 @@
 ## About
 A **Full Stack Developer** with 3+ years of experience building production applications and scalable infrastructure. Currently pursuing a Doctorate in Business Administration with a focus on Business Intelligence & Data Analytics.
 
-**Available for full-time opportunities in AI/ML engineering and full-stack development roles.**
+**Available for full-time opportunities in AI/ML engineering and full-stack development roles in India and UK.**
 
 ## Features
 
@@ -53,13 +53,13 @@ Intelligent algorithm that automatically detects the optimal resume format for e
 
 **How it works:**
 - Visitors from UK/Europe automatically see UK resume highlighted
-- US-based users get US format recommendations
+- India-based users get India format recommendations
 - Confidence scoring ensures accurate recommendations
 - Fallback handling for edge cases
 - Privacy-conscious detection methods
 
 ### **Dual Resume System**
-- **🇺🇸 US Resume**: American English, US market optimized
+- **🇮🇳 India Resume**: Indian market optimized, immediate availability
 - **🇬🇧 UK Resume**: British English, visa sponsorship noted
 - Smart recommendation with visual indicators
 - One-click downloads with analytics tracking
@@ -85,8 +85,8 @@ portfolio/
 ├── package-lock.json       # Dependency lock file
 ├── .gitignore             # Secure git configuration
 ├── resume/
-│   ├── Resume_SSingh_US.pdf  # US market optimized resume
-│   └── Resume_SSingh_UK.pdf  # UK market optimized resume
+│   ├── Resume_SSingh_India.pdf  # India market optimized resume
+│   └── Resume_SSingh_UK.pdf     # UK market optimized resume
 ├── assets/
 │   ├── images/             # Portfolio images
 │   └── icons/              # Custom icons
@@ -117,7 +117,7 @@ portfolio/
    mkdir resume
    
    # Add your resume files
-   cp your-us-resume.pdf resume/Resume_SSingh_US.pdf
+   cp your-india-resume.pdf resume/Resume_SSingh_India.pdf
    cp your-uk-resume.pdf resume/Resume_SSingh_UK.pdf
    ```
 
@@ -168,28 +168,28 @@ The system uses multiple sophisticated detection techniques:
 
 1. **Timezone Analysis** (Primary, 80% confidence)
    - Detects `Europe/London`, `Europe/Dublin` for UK
-   - Identifies `America/*`, `US/*` timezones for US
+   - Identifies `Asia/Kolkata`, `Asia/Calcutta` for India
    - Most reliable indicator of user location
 
 2. **Language Preferences** (60% confidence)
    - Analyzes `navigator.language` and `navigator.languages`
-   - Detects `en-GB` vs `en-US` preferences
+   - Detects `en-GB` for UK, `en-IN` for India
    - Browser-level language settings
 
 3. **URL Context** (90% confidence for explicit parameters)
-   - URL parameters: `?region=uk` or `?uk=true`
-   - Referrer domain analysis (`.uk` domains)
+   - URL parameters: `?region=uk` or `?region=india`
+   - Referrer domain analysis (`.uk` or `.in` domains)
    - Marketing campaign tracking
 
 4. **System Hints** (30% confidence, supplementary)
-   - Date format preferences (DD/MM vs MM/DD)
+   - Date format preferences (DD/MM/YYYY)
    - Number formatting conventions
    - Locale-specific browser settings
 
 ### **Confidence Scoring**
 - **High Confidence (60%+)**: Clear geographic indicators
 - **Medium Confidence (30-60%)**: Multiple weak signals
-- **Low Confidence (<30%)**: Fallback to US format
+- **Low Confidence (<30%)**: Fallback to India format
 - **Error Handling**: Graceful degradation with user choice
 
 ### **Analytics Tracking**
@@ -223,7 +223,7 @@ This portfolio implements **production-grade security**:
 3. **Replace project details** and links
 4. **Modify color scheme** in CSS variables
 5. **Create dual resume versions**:
-   - US version: American English, US formatting
+   - India version: Indian market optimized, immediate availability
    - UK version: British English, visa requirements
 6. **Configure analytics** with your GA4 Measurement ID
 7. **Test smart detection** with different browsers/locations
@@ -234,7 +234,7 @@ This portfolio implements **production-grade security**:
 // Modify detection confidence levels
 analyzeTimezone() {
     // Adjust confidence scores for your needs
-    confidence: 0.8  // UK timezone detection
+    confidence: 0.8  // UK/India timezone detection
 }
 
 // Add custom detection methods
@@ -255,7 +255,7 @@ The portfolio is fully responsive and optimized for:
 
 ### **About**
 - Professional summary and career objectives
-- Work authorization status (US CPT & UK visa sponsorship)
+- Work authorization status (India & UK visa sponsorship)
 - Key strengths in AI/ML and full-stack development
 
 ### **Experience**
@@ -328,17 +328,20 @@ The portfolio includes comprehensive analytics to track:
 # Test UK detection
 curl "http://localhost:8000?region=uk"
 
+# Test India detection
+curl "http://localhost:8000?region=india"
+
 # Test with different user agents
-curl -H "Accept-Language: en-GB" http://localhost:8000
+curl -H "Accept-Language: en-IN" http://localhost:8000
 ```
 
 ### **VPN Testing**
 - Connect to UK VPN → Should recommend UK resume
-- Connect to US VPN → Should recommend US resume
+- Connect to India VPN → Should recommend India resume
 
 ### **Browser Testing**
-- Set browser language to English (UK)
-- Set system timezone to London
+- Set browser language to English (India) or Hindi
+- Set system timezone to Asia/Kolkata
 - Observe automatic detection and highlighting
 
 ## Connect
@@ -351,7 +354,7 @@ curl -H "Accept-Language: en-GB" http://localhost:8000
 ---
 
 > **Open to Opportunities:** AI/ML engineering and full-stack development positions
-> - 🇺🇸 **US**: Remote work and Bay Area on-site roles (CPT authorized)
+> - 🇮🇳 **India**: Remote work and on-site roles (immediate availability)
 > - 🇬🇧 **UK**: London-based positions with skilled worker visa sponsorship (required)
 
 **Smart Resume Detection automatically shows the right format for your location!**
