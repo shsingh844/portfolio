@@ -655,36 +655,20 @@
                     <span>💻</span> GitHub
                 </a>
                 
-                <!-- Smart Resume Download Section -->
+                <!-- Smart Resume Download Section (shows one based on location) -->
                 <div class="resume-section">
                     <div class="resume-downloads">
-                        <a href="/resume/Resume_SSingh_IND.pdf" 
-                           class="contact-item resume-download resume-india" 
-                           target="_blank" 
-                           onclick="trackEvent('download','resume','india_pdf')"
-                           data-resume-type="india">
-                            <span class="resume-flag">🇮🇳</span>
+                        <a id="resume-link"
+                           href="#"
+                           class="contact-item resume-download"
+                           target="_blank"
+                           style="visibility:hidden;">
+                            <span class="resume-flag" id="resume-flag">🔍</span>
                             <div class="resume-details">
-                                <strong>India Resume</strong>
-                                <small>Indian market optimized, immediate availability</small>
+                                <strong id="resume-label">Loading…</strong>
+                                <small id="resume-sublabel"></small>
                             </div>
                         </a>
-                        
-                        <a href="/resume/Resume_SSingh_UK.pdf" 
-                           class="contact-item resume-download resume-uk" 
-                           target="_blank" 
-                           onclick="trackEvent('download','resume','uk_pdf')"
-                           data-resume-type="uk">
-                            <span class="resume-flag">🇬🇧</span>
-                            <div class="resume-details">
-                                <strong>UK Resume</strong>
-                                <small>British English, visa sponsorship noted</small>
-                            </div>
-                        </a>
-                    </div>
-                    
-                    <div class="resume-smart-indicator" id="resume-indicator">
-                        <span class="loading-dots">🔍 Detecting optimal format</span>
                     </div>
                 </div>
             </div>
@@ -1030,7 +1014,7 @@
         </div>
     </div>
 
-    <script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         // ═══════════════════════════════════════════════════════
         //  Analytics
         // ═══════════════════════════════════════════════════════
@@ -1108,165 +1092,73 @@
         }
 
         // ═══════════════════════════════════════════════════════
-        //  Smart Phone Number
-        //  India  → +91 9818155639
-        //  Others → +1 571 337 0488  (US / default)
+        //  Smart Region Detection
+        //  India  → India phone + India resume
+        //  Others → US phone + UK resume (default)
         // ═══════════════════════════════════════════════════════
-        function applySmartPhone(region) {
-            const phoneEl  = document.getElementById('smart-phone');
-            const textEl   = document.getElementById('phone-number-text');
-            if (!phoneEl || !textEl) return;
+        function isIndiaVisitor() {
+            try {
+                // 1. URL override (highest priority, useful for testing)
+                const region = new URLSearchParams(window.location.search).get('region');
+                if (region === 'india') return true;
+                if (region === 'uk' || region === 'us') return false;
 
-            if (region === 'india') {
-                phoneEl.href     = 'tel:+919818155639';
-                textEl.textContent = '+91 9818155639';
-                trackEvent('smart_phone', 'detection', 'india_shown');
-            } else {
-                phoneEl.href     = 'tel:+15713370488';
-                textEl.textContent = '+1 571 337 0488';
-                trackEvent('smart_phone', 'detection', 'us_shown');
+                // 2. Timezone (most reliable signal)
+                const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                if (tz === 'Asia/Kolkata' || tz === 'Asia/Calcutta') return true;
+
+                // 3. Browser language
+                const langs = [navigator.language, ...(navigator.languages || [])].filter(Boolean);
+                if (langs.some(l => l === 'en-IN' || l.startsWith('hi'))) return true;
+
+                // 4. System locale
+                const locale = new Intl.NumberFormat().resolvedOptions().locale;
+                if (locale.includes('en-IN') || locale.includes('hi')) return true;
+
+                return false; // default → UK/US experience
+            } catch(e) {
+                return false;
             }
         }
 
-        // ═══════════════════════════════════════════════════════
-        //  Smart Resume + Phone Detector
-        // ═══════════════════════════════════════════════════════
-        class SmartDetector {
-            constructor() {
-                this.detectionMethods = [];
-                this.recommendation   = null;
-                this.confidence       = 0;
-            }
-
-            async detect() {
-                const indicator = document.getElementById('resume-indicator');
-                try {
-                    this.analyzeTimezone();
-                    this.analyzeLanguage();
-                    this.analyzeURLContext();
-                    this.analyzeSystemHints();
-
-                    this.recommendation = this.calculateRecommendation();
-
-                    // Apply to BOTH resume buttons and phone number
-                    this.applyRecommendation();
-                    applySmartPhone(this.recommendation.type);
-
-                    this.updateIndicator(indicator, true);
-                    this.trackDetection();
-                } catch(e) {
-                    console.warn('Detection failed:', e);
-                    this.handleFallback(indicator);
-                }
-            }
-
-            analyzeTimezone() {
-                try {
-                    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-                    const ukZones     = ['Europe/London','Europe/Dublin','Europe/Belfast','GB','GB-Eire'];
-                    const indiaZones  = ['Asia/Kolkata','Asia/Calcutta','Asia/Colombo'];
-                    if (ukZones.some(z => tz.includes(z)))
-                        this.detectionMethods.push({ method:'timezone', result:'uk',    confidence:0.8, details:tz });
-                    else if (indiaZones.some(z => tz.includes(z)))
-                        this.detectionMethods.push({ method:'timezone', result:'india', confidence:0.8, details:tz });
-                } catch(e) {}
-            }
-
-            analyzeLanguage() {
-                try {
-                    const langs = [navigator.language, ...(navigator.languages||[])].filter(Boolean);
-                    const hasUK    = langs.some(l => l === 'en-GB' || l.startsWith('en-GB'));
-                    const hasIndia = langs.some(l => ['en-IN','hi','hi-IN'].some(x => l === x || l.startsWith(x)));
-                    if (hasUK)    this.detectionMethods.push({ method:'language', result:'uk',    confidence:0.6, details:langs[0] });
-                    else if (hasIndia) this.detectionMethods.push({ method:'language', result:'india', confidence:0.6, details:langs[0] });
-                } catch(e) {}
-            }
-
-            analyzeURLContext() {
-                try {
-                    const url      = new URL(window.location.href);
-                    const referrer = document.referrer;
-                    const region   = url.searchParams.get('region');
-
-                    if (region === 'uk'    || url.searchParams.get('uk')    === 'true')
-                        this.detectionMethods.push({ method:'url_param', result:'uk',    confidence:0.9, details:'URL param' });
-                    else if (region === 'india' || url.searchParams.get('india') === 'true')
-                        this.detectionMethods.push({ method:'url_param', result:'india', confidence:0.9, details:'URL param' });
-
-                    if (referrer) {
-                        if (referrer.includes('.uk'))
-                            this.detectionMethods.push({ method:'referrer', result:'uk',    confidence:0.4, details:'UK domain' });
-                        else if (referrer.includes('.in'))
-                            this.detectionMethods.push({ method:'referrer', result:'india', confidence:0.4, details:'IN domain' });
-                    }
-                } catch(e) {}
-            }
-
-            analyzeSystemHints() {
-                try {
-                    const locale = new Intl.NumberFormat().resolvedOptions().locale;
-                    if (locale.includes('en-IN') || locale.includes('hi'))
-                        this.detectionMethods.push({ method:'system_format', result:'india', confidence:0.3, details:`Locale:${locale}` });
-                    else if (locale.includes('en-GB'))
-                        this.detectionMethods.push({ method:'system_format', result:'uk',    confidence:0.3, details:`Locale:${locale}` });
-                } catch(e) {}
-            }
-
-            calculateRecommendation() {
-                if (!this.detectionMethods.length) return { type:'india', confidence:0, method:'default_fallback' };
-                const ukScore    = this.detectionMethods.filter(m => m.result==='uk').reduce((s,m) => s+m.confidence, 0);
-                const indiaScore = this.detectionMethods.filter(m => m.result==='india').reduce((s,m) => s+m.confidence, 0);
-                if (ukScore > indiaScore && ukScore > 0.4)
-                    return { type:'uk',    confidence:ukScore,    method: this.detectionMethods.find(m=>m.result==='uk').method };
-                if (indiaScore > 0.3)
-                    return { type:'india', confidence:indiaScore, method: this.detectionMethods.find(m=>m.result==='india').method };
-                return { type:'india', confidence:0, method:'low_confidence_fallback' };
-            }
-
-            applyRecommendation() {
-                const indiaBtn = document.querySelector('[data-resume-type="india"]');
-                const ukBtn    = document.querySelector('[data-resume-type="uk"]');
-                if (!indiaBtn || !ukBtn) return;
-                indiaBtn.classList.remove('recommended');
-                ukBtn.classList.remove('recommended');
-                if (this.recommendation.type === 'uk') {
-                    ukBtn.classList.add('recommended');
-                    ukBtn.parentNode.insertBefore(ukBtn, indiaBtn);
+        function applyRegion(isIndia) {
+            // ── Phone number ──
+            const phoneEl = document.getElementById('smart-phone');
+            const textEl  = document.getElementById('phone-number-text');
+            if (phoneEl && textEl) {
+                if (isIndia) {
+                    phoneEl.href       = 'tel:+919818155639';
+                    textEl.textContent = '+91 9818155639';
                 } else {
-                    indiaBtn.classList.add('recommended');
-                    indiaBtn.parentNode.insertBefore(indiaBtn, ukBtn);
+                    phoneEl.href       = 'tel:+15713370488';
+                    textEl.textContent = '+1 571 337 0488';
                 }
             }
 
-            updateIndicator(indicator, success) {
-                if (!indicator) return;
-                if (success && this.recommendation) {
-                    const conf   = this.recommendation.confidence > 0.6 ? 'high confidence' : this.recommendation.confidence > 0.3 ? 'medium confidence' : 'low confidence';
-                    const region = this.recommendation.type === 'india' ? 'India' : 'UK';
-                    const method = this.recommendation.method.replace(/_/g,' ');
-                    indicator.innerHTML = `✨ Recommended ${region} format (detected via ${method}, ${conf})`;
-                    indicator.className = 'resume-smart-indicator success';
-                    setTimeout(() => { indicator.style.opacity='0'; setTimeout(()=>indicator.style.display='none',300); }, 4000);
+            // ── Resume link ──
+            const resumeLink     = document.getElementById('resume-link');
+            const resumeFlag     = document.getElementById('resume-flag');
+            const resumeLabel    = document.getElementById('resume-label');
+            const resumeSublabel = document.getElementById('resume-sublabel');
+
+            if (resumeLink) {
+                if (isIndia) {
+                    resumeLink.href            = '/resume/Resume_SSingh_IND.pdf';
+                    resumeFlag.textContent     = '🇮🇳';
+                    resumeLabel.textContent    = 'Download Resume';
+                    resumeSublabel.textContent = 'India market optimized';
+                    resumeLink.onclick         = () => trackEvent('download', 'resume', 'india_pdf');
                 } else {
-                    indicator.innerHTML = '⚡ Both formats available – choose based on your region';
-                    indicator.className = 'resume-smart-indicator fallback';
+                    resumeLink.href            = '/resume/Resume_SSingh_UK.pdf';
+                    resumeFlag.textContent     = '🇬🇧';
+                    resumeLabel.textContent    = 'Download Resume';
+                    resumeSublabel.textContent = 'UK / international version';
+                    resumeLink.onclick         = () => trackEvent('download', 'resume', 'uk_pdf');
                 }
+                resumeLink.style.visibility = 'visible';
             }
 
-            handleFallback(indicator) {
-                this.recommendation = { type:'india', confidence:0, method:'error_fallback' };
-                this.applyRecommendation();
-                applySmartPhone('india');
-                this.updateIndicator(indicator, false);
-                this.trackDetection();
-            }
-
-            trackDetection() {
-                trackEvent('smart_detect','recommendation',
-                    `${this.recommendation.type}_${this.recommendation.method}_${this.recommendation.confidence.toFixed(2)}`);
-                this.detectionMethods.forEach(m =>
-                    trackEvent('smart_detect','method', `${m.method}_${m.result}_${m.confidence.toFixed(2)}`));
-            }
+            trackEvent('smart_detect', 'region', isIndia ? 'india' : 'international');
         }
 
         // ═══════════════════════════════════════════════════════
@@ -1281,17 +1173,17 @@
                 analytics.trackEvent('timing_complete','engagement',`${Math.round((Date.now()-startTime)/1000)}_seconds`);
             });
 
-            // Run detection after a short pause so analytics is ready
-            setTimeout(() => { new SmartDetector().detect(); }, 500);
+            // Run region detection after a short pause so analytics is ready
+            setTimeout(() => { applyRegion(isIndiaVisitor()); }, 500);
         });
 
         // Scroll depth tracking
         let maxScroll = 0;
         window.addEventListener('scroll', () => {
-            const pct = Math.round((window.scrollY/(document.body.scrollHeight-window.innerHeight))*100);
+            const pct = Math.round((window.scrollY/(document.body.scrollHeight-window.innerHeight)) * 100);
             if (pct > maxScroll) {
                 maxScroll = pct;
-                if (maxScroll % 25 === 0) trackEvent('scroll','engagement',`${maxScroll}_percent`);
+                if (maxScroll % 25 === 0) trackEvent('scroll', 'engagement', `${maxScroll}_percent`);
             }
         });
     </script>
