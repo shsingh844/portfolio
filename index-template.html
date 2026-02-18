@@ -31,8 +31,6 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"></noscript>
     
-    <!-- Dynamic Google Analytics - No hardcoded IDs -->
-    <!-- GA will be loaded dynamically by JavaScript below -->
     <style>
         * {
             margin: 0;
@@ -70,18 +68,42 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
+        /* ── Profile photo ── */
         .profile-img {
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            background: linear-gradient(45deg, #667eea, #764ba2);
             margin: 0 auto 20px;
+            overflow: hidden;
+            border: 4px solid transparent;
+            background: linear-gradient(white, white) padding-box,
+                        linear-gradient(45deg, #667eea, #764ba2) border-box;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 48px;
+        }
+
+        .profile-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        /* Fallback shown when photo fails to load */
+        .profile-img .profile-fallback {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
             color: white;
-            font-weight: bold;
+            font-weight: 700;
+            letter-spacing: 1px;
         }
 
         .header h1 {
@@ -120,6 +142,23 @@
         .contact-item:hover {
             color: #667eea;
             transform: translateY(-2px);
+        }
+
+        /* Phone number smart display */
+        #smart-phone {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        #smart-phone:hover {
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+        #phone-number-text {
+            transition: opacity 0.3s ease;
         }
 
         .status-badge {
@@ -180,14 +219,8 @@
         }
 
         @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
         .section h2 {
@@ -485,13 +518,8 @@
             transition: all 0.3s ease;
         }
 
-        .analytics-status.loaded {
-            background: rgba(76, 175, 80, 0.8);
-        }
-
-        .analytics-status.error {
-            background: rgba(244, 67, 54, 0.8);
-        }
+        .analytics-status.loaded { background: rgba(76, 175, 80, 0.8); }
+        .analytics-status.error  { background: rgba(244, 67, 54, 0.8); }
 
         /* Resume Section */
         .resume-section {
@@ -537,20 +565,10 @@
             opacity: 0.9;
         }
 
-        .resume-download:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
+        .resume-download:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .resume-download.recommended:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 12px 35px rgba(102,126,234,0.5); }
 
-        .resume-download.recommended:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.5);
-        }
-
-        .resume-flag {
-            font-size: 1.5em;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-        }
+        .resume-flag { font-size: 1.5em; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
 
         .resume-details {
             display: flex;
@@ -559,16 +577,8 @@
             text-align: left;
         }
 
-        .resume-details strong {
-            font-size: 0.95em;
-            margin-bottom: 2px;
-        }
-
-        .resume-details small {
-            opacity: 0.8;
-            font-size: 0.75em;
-            line-height: 1.2;
-        }
+        .resume-details strong { font-size: 0.95em; margin-bottom: 2px; }
+        .resume-details small  { opacity: 0.8; font-size: 0.75em; line-height: 1.2; }
 
         .resume-smart-indicator {
             font-size: 0.85em;
@@ -578,118 +588,70 @@
             transition: all 0.3s ease;
         }
 
-        .resume-smart-indicator.success {
-            color: #4CAF50;
-            font-weight: 500;
-        }
+        .resume-smart-indicator.success  { color: #4CAF50; font-weight: 500; }
+        .resume-smart-indicator.fallback { color: #FF9800; }
 
-        .resume-smart-indicator.fallback {
-            color: #FF9800;
-        }
-
-        /* Loading animation */
-        .loading-dots {
-            animation: loadingDots 1.5s infinite;
-        }
+        .loading-dots { animation: loadingDots 1.5s infinite; }
 
         @keyframes loadingDots {
             0%, 20% { opacity: 1; }
-            50% { opacity: 0.5; }
-            80%, 100% { opacity: 1; }
+            50%      { opacity: 0.5; }
+            80%, 100%{ opacity: 1; }
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .container {
-                padding: 15px;
-            }
-
-            .header {
-                padding: 30px 20px;
-            }
-
-            .header h1 {
-                font-size: 2rem;
-            }
-
-            .contact-info {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .nav {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .section {
-                padding: 25px 20px;
-            }
-
-            .skills-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .projects-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .timeline {
-                padding-left: 20px;
-            }
-
-            .timeline-item::before {
-                left: -31px;
-            }
-
-            .analytics-status {
-                bottom: 10px;
-                right: 10px;
-                font-size: 0.7rem;
-            }
-
-            .resume-downloads {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .resume-download {
-                width: 100%;
-                max-width: 280px;
-                justify-content: center;
-                text-align: center;
-            }
-            
-            .resume-details {
-                align-items: center;
-                text-align: center;
-            }
+            .container { padding: 15px; }
+            .header { padding: 30px 20px; }
+            .header h1 { font-size: 2rem; }
+            .contact-info { flex-direction: column; gap: 15px; }
+            .nav { flex-direction: column; align-items: center; }
+            .section { padding: 25px 20px; }
+            .skills-grid { grid-template-columns: 1fr; }
+            .projects-grid { grid-template-columns: 1fr; }
+            .timeline { padding-left: 20px; }
+            .timeline-item::before { left: -31px; }
+            .analytics-status { bottom: 10px; right: 10px; font-size: 0.7rem; }
+            .resume-downloads { flex-direction: column; align-items: center; }
+            .resume-download { width: 100%; max-width: 280px; justify-content: center; text-align: center; }
+            .resume-details { align-items: center; text-align: center; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <!-- Analytics Status Indicator -->
-        <div id="analytics-status" class="analytics-status">
-            Analytics Loading...
-        </div>
+        <div id="analytics-status" class="analytics-status">Analytics Loading...</div>
         
         <!-- Header -->
         <div class="header">
-            <div class="profile-img">SS</div>
+            <div class="profile-img">
+                <img
+                    src="https://res.cloudinary.com/dlpeaghbe/image/upload/v1771437017/profile_wob18k.png"
+                    alt="Shivani Singh"
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                />
+                <div class="profile-fallback" style="display:none;">SS</div>
+            </div>
+
             <h1>Shivani Singh</h1>
             <p class="tagline">Full Stack Developer</p>
+
             <div class="contact-info">
-                <a href="mailto:shsingh844@gmail.com" class="contact-item" onclick="trackEvent('click', 'contact', 'email')">
+                <a href="mailto:shsingh844@gmail.com" class="contact-item" onclick="trackEvent('click','contact','email')">
                     <span>📧</span> shsingh844@gmail.com
                 </a>
-                <a href="tel:+919818155639" class="contact-item" onclick="trackEvent('click', 'contact', 'phone_india')">
-                    <span>📱</span> +91 9818155639
+
+                <!-- Smart Phone Number (updated by JS based on location) -->
+                <a id="smart-phone" href="tel:+15713370488" onclick="trackEvent('click','contact','phone')">
+                    <span>📱</span>
+                    <span id="phone-number-text">+1 571 337 0488</span>
                 </a>
-                <a href="https://linkedin.com/in/shivani-singh13" class="contact-item" target="_blank" onclick="trackEvent('click', 'social', 'linkedin')">
+
+                <a href="https://linkedin.com/in/shivani-singh13" class="contact-item" target="_blank" onclick="trackEvent('click','social','linkedin')">
                     <span>💼</span> LinkedIn
                 </a>
-                <a href="https://github.com/shsingh844" class="contact-item" target="_blank" onclick="trackEvent('click', 'social', 'github')">
+                <a href="https://github.com/shsingh844" class="contact-item" target="_blank" onclick="trackEvent('click','social','github')">
                     <span>💻</span> GitHub
                 </a>
                 
@@ -699,7 +661,7 @@
                         <a href="/resume/Resume_SSingh_IND.pdf" 
                            class="contact-item resume-download resume-india" 
                            target="_blank" 
-                           onclick="trackEvent('download', 'resume', 'india_pdf')"
+                           onclick="trackEvent('download','resume','india_pdf')"
                            data-resume-type="india">
                             <span class="resume-flag">🇮🇳</span>
                             <div class="resume-details">
@@ -711,7 +673,7 @@
                         <a href="/resume/Resume_SSingh_UK.pdf" 
                            class="contact-item resume-download resume-uk" 
                            target="_blank" 
-                           onclick="trackEvent('download', 'resume', 'uk_pdf')"
+                           onclick="trackEvent('download','resume','uk_pdf')"
                            data-resume-type="uk">
                             <span class="resume-flag">🇬🇧</span>
                             <div class="resume-details">
@@ -731,27 +693,27 @@
 
         <!-- Navigation -->
         <div class="nav">
-            <button class="nav-btn active" onclick="showSection('about'); trackEvent('click', 'navigation', 'about')">About</button>
-            <button class="nav-btn" onclick="showSection('experience'); trackEvent('click', 'navigation', 'experience')">Experience</button>
-            <button class="nav-btn" onclick="showSection('projects'); trackEvent('click', 'navigation', 'projects')">Projects</button>
-            <button class="nav-btn" onclick="showSection('skills'); trackEvent('click', 'navigation', 'skills')">Skills</button>
-            <button class="nav-btn" onclick="showSection('education'); trackEvent('click', 'navigation', 'education')">Education</button>
-            <button class="nav-btn" onclick="showSection('research'); trackEvent('click', 'navigation', 'research')">Research</button>
+            <button class="nav-btn active" onclick="showSection('about'); trackEvent('click','navigation','about')">About</button>
+            <button class="nav-btn" onclick="showSection('experience'); trackEvent('click','navigation','experience')">Experience</button>
+            <button class="nav-btn" onclick="showSection('projects'); trackEvent('click','navigation','projects')">Projects</button>
+            <button class="nav-btn" onclick="showSection('skills'); trackEvent('click','navigation','skills')">Skills</button>
+            <button class="nav-btn" onclick="showSection('education'); trackEvent('click','navigation','education')">Education</button>
+            <button class="nav-btn" onclick="showSection('research'); trackEvent('click','navigation','research')">Research</button>
         </div>
 
         <!-- About Section -->
         <div id="about" class="section active">
             <h2>🚀 About Me</h2>
-            <p style="font-size: 1.1rem; margin-bottom: 30px; color: #444; line-height: 1.7;">
+            <p style="font-size:1.1rem;margin-bottom:30px;color:#444;line-height:1.7;">
                 Software Engineer with 3+ years of experience building production applications and scalable infrastructure. 
                 I specialize in AI/ML integration, full-stack development, and turning innovative ideas into production-ready solutions. 
-                Currently pursuing a Doctorate in Business Administration with a focus on Business Intelligence & Data Analytics.
+                Currently pursuing a Doctorate in Business Administration with a focus on Business Intelligence &amp; Data Analytics.
             </p>
 
             <h3>🎯 What I'm Looking For</h3>
-            <p style="margin-bottom: 30px; color: #666; line-height: 1.6;">
+            <p style="margin-bottom:30px;color:#666;line-height:1.6;">
                 I'm seeking challenging opportunities in <strong>AI product development</strong> where I can leverage my technical expertise 
-                while expanding into cutting-edge AI technologies. I'm particularly drawn to startups working on climate tech, 
+                while expanding into cutting-edge AI technologies. I'm particularly drawn to startups working on climate tech, FinTech,
                 sustainability, and responsible AI applications.
             </p>
 
@@ -761,7 +723,7 @@
                 <div class="work-auth-grid">
                     <div class="work-auth-item">
                         <h5>🇮🇳 India</h5>
-                        <p><strong>Indian citizen currently based in Delhi, India.</strong> Available to work full-time, starting immediately. Open to remote, hybrid, or on-site positions across India.</p>
+                        <p><strong>Indian citizen.</strong> Available to work full-time, starting immediately. Open to remote, hybrid, or on-site positions across India.</p>
                     </div>
                     <div class="work-auth-item">
                         <h5>🇬🇧 United Kingdom</h5>
@@ -789,7 +751,7 @@
                     <p>Proven track record in fast-paced startup environments, from prototype to production deployment, with focus on rapid iteration and user feedback.</p>
                 </div>
                 <div class="skill-category">
-                    <h4>Research & Innovation</h4>
+                    <h4>Research &amp; Innovation</h4>
                     <p>Currently conducting doctoral research on predictive analytics for financial systems, combining academic rigor with practical applications.</p>
                 </div>
             </div>
@@ -799,16 +761,35 @@
         <div id="experience" class="section">
             <h2>💼 Experience</h2>
             <div class="timeline">
+
+                <!-- NEW: Independent Software Consultant -->
+                <div class="timeline-item">
+                    <div class="timeline-date">Nov 2022 – Present</div>
+                    <div class="timeline-title">Independent Software Consultant &amp; DBA Scholar</div>
+                    <div class="timeline-company">Self-Employed | San Francisco, CA (Remote)</div>
+                    <div class="timeline-content">
+                        <ul>
+                            <li>Built real-time weather balloon analytics platform with Claude API integration, implementing multi-modal prompt engineering for atmospheric pattern analysis and intelligent caching for 24-hour continuous operation, dramatically reducing telemetry analysis time while enabling data-driven operational decisions.</li>
+                            <li>Developed AI-powered fashion platform using GPT-4 and LangChain with PostgreSQL behavioural tracking and geospatial filtering, achieving strong user engagement through personalized recommendations.</li>
+                            <li>Architected production cloud infrastructure with automated CI/CD pipelines for React/Flask applications, implementing monitoring and database optimization achieving sub-second query response times.</li>
+                            <li>Conducting doctoral research analysing reputational contagion from 2,180 major bank failures on small regional banks using event study methodology and data triangulation, developing a regulatory intervention framework and early-warning indicators to prevent secondary collapses.</li>
+                        </ul>
+                        <!-- <p style="margin-top:12px;font-size:0.9rem;color:#667eea;">
+                            📄 <a href="/resume/Resume_SSingh_UK.pdf" target="_blank" style="color:#667eea;font-weight:600;">View full resume</a> for detailed project breakdowns.
+                        </p> -->
+                    </div>
+                </div>
+
                 <div class="timeline-item">
                     <div class="timeline-date">Apr 2022 - Nov 2022</div>
                     <div class="timeline-title">Full Stack Engineer</div>
                     <div class="timeline-company">Mixhalo, San Francisco, CA</div>
                     <div class="timeline-content">
                         <ul>
-                            <li>Architected and prototyped real-time audio translation system (Mixhalo Translate), building foundational demo to demonstrate technical feasibility and market vision to stakeholders and investors</li>
-                            <li>Conducted comprehensive technical research and proof-of-concept development for WebRTC-based audio processing pipeline, establishing scalable architecture patterns</li>
-                            <li>Built production-ready infrastructure components using Kubernetes and Docker, improving cost-efficiency by 67%</li>
-                            <li>Designed data pipeline architecture combining audio streaming, metadata processing, and user interaction patterns</li>
+                            <li>Led 0→1 development of real-time translation prototype that became company's flagship monetization product, directly influencing future investor presentations and product roadmap pivot toward translation services.</li>
+                            <li>Designed scalable WebRTC architecture through systematic evaluation of multiple frameworks, reducing future product R&D cycles and establishing reusable patterns for all streaming features.</li>
+                            <li>Reduced infrastructure costs by 67%, architecting Kubernetes-based deployment system that improved deployment frequency from weekly to daily, eliminating DevOps bottlenecks for engineering team.</li>
+                            <li>Built end-to-end observability platform capturing user interactions and system metrics, dramatically reducing incident response time and enabling data-driven product decisions that shaped company roadmap.</li>
                         </ul>
                     </div>
                 </div>
@@ -819,10 +800,10 @@
                     <div class="timeline-company">Extreme Networks, San Jose, CA</div>
                     <div class="timeline-content">
                         <ul>
-                            <li>Architected data consolidation systems integrating multiple sources with SQL/NoSQL databases</li>
-                            <li>Developed production-grade visualization dashboards in Power BI and Tableau, creating self-service analytics platform</li>
-                            <li>Implemented comprehensive testing framework, reducing production incidents by 45%</li>
-                            <li>Mentored engineering team members on network management and software architecture</li>
+                            <li>Architected company-wide data platform consolidating multiple siloed systems into unified warehouse processing millions of events monthly, dramatically reducing executive reporting cycles across business units.</li>
+                            <li>Delivered self-service analytics platform with multiple Tableau/Power BI dashboards heavily used across organization, dramatically reducing ad-hoc reporting requests and freeing capacity for strategic initiatives.</li>
+                            <li>Delivered multiple production features for ExtremeIQ cloud networking platform managing thousands of enterprise devices, gaining deep expertise in TCP/IP, DNS, VPNs, which accelerated customer issue resolution.</li>
+                            <li>Established comprehensive testing framework integrated into CI/CD pipeline, reducing production incidents by 45% and deployment rollbacks significantly, enabling team to accelerate feature velocity.</li>
                         </ul>
                     </div>
                 </div>
@@ -833,8 +814,8 @@
                     <div class="timeline-company">Extreme Networks, San Jose, CA</div>
                     <div class="timeline-content">
                         <ul>
-                            <li>Collaborated with UX designer to revamp product's user interface, enhancing user experience and visual appeal</li>
-                            <li>Developed frontend libraries using Dojo and Honeycomb frameworks, improving code reusability and development efficiency</li>
+                            <li>Led UI redesign that significantly increased customer satisfaction through user research and iterative testing, becoming key differentiator in sales demos and customer retention.</li>
+                            <li>Created reusable component library using Dojo framework, significantly reducing code duplication and cutting feature development time across multiple product teams.</li>
                         </ul>
                     </div>
                 </div>
@@ -845,10 +826,10 @@
                     <div class="timeline-company">Questrom School of Business, Boston University</div>
                     <div class="timeline-content">
                         <ul>
-                            <li>Mentored students in refining research topics and preparing proposals for the chair's review, resulting in improved proposal quality and increased approval rates</li>
-                            <li>Taught data analytics and business intelligence using R, Python, and SQL, leveraging BigQuery for analysis & visualization</li>
-                            <li>Instructed foundational Data Science concepts, including algorithms, statistical analysis, and predictive analysis with IBM SPSS</li>
-                            <li>Developed curriculum materials and provided one-on-one support to enhance student understanding of complex analytical concepts</li>
+                            <li>Mentored students in refining research topics and preparing proposals for the chair's review, resulting in improved proposal quality and increased approval rates.</li>
+                            <li>Taught data analytics and business intelligence using R, Python, and SQL, leveraging BigQuery for analysis &amp; visualization.</li>
+                            <li>Instructed foundational Data Science concepts, including algorithms, statistical analysis, and predictive analysis with IBM SPSS.</li>
+                            <li>Developed curriculum materials and provided one-on-one support to enhance student understanding of complex analytical concepts.</li>
                         </ul>
                     </div>
                 </div>
@@ -856,16 +837,17 @@
                 <div class="timeline-item">
                     <div class="timeline-date">Sep 2018 - Jan 2020</div>
                     <div class="timeline-title">Assistive Technology Consultant</div>
-                    <div class="timeline-company">Disability & Access Services, Boston University</div>
+                    <div class="timeline-company">Disability &amp; Access Services, Boston University</div>
                     <div class="timeline-content">
                         <ul>
-                            <li>Analyzed concussion data using R, Scala, and Python, reducing incorrect assistive tool distributions by 97%</li>
-                            <li>Automated student profile display with HIPAA-compliant PII redaction/encoding practices</li>
-                            <li>Streamlined accommodations, reducing data redundancy by 80% and halving service request times</li>
-                            <li>Launched "Library Scan Project," making BU libraries the go-to for accommodation requests</li>
+                            <li>Analysed concussion data using R, Scala, and Python, reducing incorrect assistive tool distributions by 97%.</li>
+                            <li>Automated student profile display with HIPAA-compliant PII redaction/encoding practices.</li>
+                            <li>Streamlined accommodations, reducing data redundancy by 80% and halving service request times.</li>
+                            <li>Launched "Library Scan Project," making BU libraries the go-to for accommodation requests.</li>
                         </ul>
                     </div>
                 </div>
+
             </div>
         </div>
 
@@ -888,9 +870,7 @@
                         <span class="tech-tag">Agent Systems</span>
                     </div>
                     <div class="project-links">
-                        <a href="https://windborne-dashboard.onrender.com" class="project-link" target="_blank" onclick="trackEvent('click', 'project', 'windborne-demo')">
-                            🚀 Live Demo
-                        </a>
+                        <a href="https://windborne-dashboard.onrender.com" class="project-link" target="_blank" onclick="trackEvent('click','project','windborne-demo')">🚀 Live Demo</a>
                     </div>
                 </div>
 
@@ -908,9 +888,7 @@
                         <span class="tech-tag">Geospatial Algorithms</span>
                     </div>
                     <div class="project-links">
-                        <a href="https://sustainability-fashion-tracker.onrender.com" class="project-link" target="_blank" onclick="trackEvent('click', 'project', 'fashion-demo')">
-                            🚀 Live Demo
-                        </a>
+                        <a href="https://sustainability-fashion-tracker.onrender.com" class="project-link" target="_blank" onclick="trackEvent('click','project','fashion-demo')">🚀 Live Demo</a>
                     </div>
                 </div>
             </div>
@@ -921,33 +899,35 @@
             <h2>⚡ Technical Skills</h2>
             <div class="skills-grid">
                 <div class="skill-category">
-                    <h4>🤖 AI & Machine Learning</h4>
+                    <h4>🤖 AI &amp; Machine Learning</h4>
                     <div class="skill-tags">
-                        <span class="skill-tag">LLM Integration</span>
+                        <span class="skill-tag">LLM Integration &amp; Deployment</span>
+                        <span class="skill-tag">Production ML Systems</span>
                         <span class="skill-tag">Agent Systems</span>
+                        <span class="skill-tag">Model Serving &amp; Orchestration</span>
                         <span class="skill-tag">Prompt Engineering</span>
                         <span class="skill-tag">Claude API</span>
                         <span class="skill-tag">OpenAI</span>
                         <span class="skill-tag">LangChain</span>
                         <span class="skill-tag">RAG</span>
-                        <span class="skill-tag">Context Handling</span>
-                        <span class="skill-tag">Embedding Systems</span>
-                        <span class="skill-tag">Tool-Calling Frameworks</span>
                         <span class="skill-tag">Statistical Analysis</span>
                         <span class="skill-tag">Predictive Analytics</span>
+                        <span class="skill-tag">TensorFlow</span>
+                        <span class="skill-tag">PyTorch</span>
+                        <span class="skill-tag">scikit-learn</span>
                     </div>
                 </div>
 
                 <div class="skill-category">
-                    <h4>💻 Programming Languages & Frameworks</h4>
+                    <h4>💻 Programming Languages &amp; Frameworks</h4>
                     <div class="skill-tags">
                         <span class="skill-tag">Python</span>
+                        <span class="skill-tag">Flask</span>
+                        <span class="skill-tag">WebRTC</span>
+                        <span class="skill-tag">RESTful APIs</span>
                         <span class="skill-tag">TypeScript</span>
                         <span class="skill-tag">JavaScript</span>
-                        <span class="skill-tag">R</span>
-                        <span class="skill-tag">SQL</span>
                         <span class="skill-tag">React</span>
-                        <span class="skill-tag">Flask</span>
                         <span class="skill-tag">NodeJS</span>
                         <span class="skill-tag">HTML</span>
                         <span class="skill-tag">CSS</span>
@@ -955,29 +935,30 @@
                 </div>
 
                 <div class="skill-category">
-                    <h4>📊 Data & Analytics</h4>
+                    <h4>📊 Data &amp; Infrastructure</h4>
                     <div class="skill-tags">
+                        <span class="skill-tag">R</span>
+                        <span class="skill-tag">SQL</span>
                         <span class="skill-tag">ETL/ELT</span>
                         <span class="skill-tag">PostgreSQL</span>
                         <span class="skill-tag">Airflow</span>
-                        <span class="skill-tag">Big Data</span>
+                        <span class="skill-tag">Databricks</span>
+                        <span class="skill-tag">Prometheus</span>
+                        <span class="skill-tag">Grafana</span>
+                        <span class="skill-tag">Big Query</span>
                         <span class="skill-tag">Tableau</span>
-                        <span class="skill-tag">Real-time Processing</span>
                         <span class="skill-tag">Power BI</span>
-                        <span class="skill-tag">Data Visualization</span>
                     </div>
                 </div>
 
                 <div class="skill-category">
-                    <h4>☁️ DevOps & Cloud</h4>
+                    <h4>☁️ DevOps &amp; Cloud</h4>
                     <div class="skill-tags">
                         <span class="skill-tag">Docker</span>
                         <span class="skill-tag">Kubernetes</span>
                         <span class="skill-tag">AWS</span>
                         <span class="skill-tag">GCP</span>
                         <span class="skill-tag">CI/CD</span>
-                        <span class="skill-tag">RestAPI</span>
-                        <span class="skill-tag">Streamlit</span>
                         <span class="skill-tag">Terraform</span>
                         <span class="skill-tag">Jenkins</span>
                     </div>
@@ -993,7 +974,7 @@
                 <div class="education-degree">Doctor of Business Administration</div>
                 <div class="education-school">Westcliff University, Irvine, CA</div>
                 <div class="education-date">Oct 2022 - Aug 2026 (Expected)</div>
-                <p><strong>Concentration:</strong> Business Intelligence & Data Analytics</p>
+                <p><strong>Concentration:</strong> Business Intelligence &amp; Data Analytics</p>
                 <p><strong>Format:</strong> Online</p>
                 <p><strong>Status:</strong> Currently in final year, expected graduation August 2026</p>
             </div>
@@ -1002,15 +983,15 @@
                 <div class="education-degree">Master of Science, Computer Information Systems</div>
                 <div class="education-school">Boston University, Boston, MA</div>
                 <div class="education-date">Sep 2018 - Jan 2020</div>
-                <p><strong>Concentration:</strong> Database Management & Business Intelligence</p>
+                <p><strong>Concentration:</strong> Database Management &amp; Business Intelligence</p>
                 <p><strong>GPA:</strong> 3.60</p>
             </div>
 
             <div class="education-item">
-                <div class="education-degree">Bachelor of Technology, Electronics & Communication Engineering</div>
+                <div class="education-degree">Bachelor of Technology, Electronics &amp; Communication Engineering</div>
                 <div class="education-school">Indira Gandhi Delhi Technical University, New Delhi, India</div>
                 <div class="education-date">Aug 2014 - Jun 2018</div>
-                <p><strong>CGPA:</strong> 8.9</p>
+                <p><strong>CPI:</strong> 64.37</p>
             </div>
         </div>
 
@@ -1023,8 +1004,8 @@
                 <div class="education-school">Westcliff University</div>
                 <div class="education-date">Oct 2022 - Aug 2026 (Expected)</div>
                 <p><strong>Topic:</strong> Quantitative analysis of reputational contagion effects on smaller banks when larger banks collapse</p>
-                <p><strong>Methodology:</strong> Advanced machine learning models for multimodal data analysis with high precision, establishing foundation for predictive analysis in financial systems</p>
-                <p><strong>Applications:</strong> Risk assessment, financial stability prediction, systemic risk modeling</p>
+                <p><strong>Methodology:</strong> •	Developing ML-based financial contagion model analyzing historical bank failures with ensemble methods, achieving strong predictive accuracy; research progressing toward peer-reviewed publication</p>
+                <p><strong>Applications:</strong> Risk assessment, financial stability prediction, regulatory intervention framework</p>
             </div>
 
             <h3>🎯 Research Interests</h3>
@@ -1034,7 +1015,7 @@
                     <p>Predictive analytics for financial stability, risk assessment models, and systemic risk analysis using machine learning approaches.</p>
                 </div>
                 <div class="skill-category">
-                    <h4>AI Ethics & Safety</h4>
+                    <h4>AI Ethics &amp; Safety</h4>
                     <p>Fair usage of AI systems, responsible AI development, and regulatory frameworks for AI applications in business contexts.</p>
                 </div>
                 <div class="skill-category">
@@ -1050,7 +1031,9 @@
     </div>
 
     <script>
-        // Configuration Management
+        // ═══════════════════════════════════════════════════════
+        //  Analytics
+        // ═══════════════════════════════════════════════════════
         class AnalyticsConfig {
             constructor() {
                 this.measurementId = this.getMeasurementId();
@@ -1059,77 +1042,43 @@
             }
 
             getMeasurementId() {
-                // Get GA ID from build process (environment variable)
                 const GA_ID = '{{GA_MEASUREMENT_ID}}';
-                
-                // URL parameter override for testing
                 const urlParams = new URLSearchParams(window.location.search);
                 const gaParam = urlParams.get('ga_id');
-                
-                if (gaParam) {
-                    console.log('Using GA ID from URL parameter');
-                    return gaParam;
-                }
-
-                // Use the GA ID from environment variable
-                if (GA_ID && GA_ID !== 'GA_NOT_SET' && GA_ID.startsWith('G-')) {
-                    console.log('Using GA ID from environment variable');
-                    return GA_ID;
-                }
-
-                // Development mode
-                console.log('Development mode - GA tracking disabled');
+                if (gaParam) return gaParam;
+                if (GA_ID && GA_ID !== 'GA_NOT_SET' && GA_ID.startsWith('G-')) return GA_ID;
                 return null;
             }
 
             updateStatus(message, type = 'default') {
-                if (this.statusElement) {
-                    this.statusElement.textContent = message;
-                    this.statusElement.className = `analytics-status ${type}`;
-                    
-                    // Auto-hide after 3 seconds if successful
-                    if (type === 'loaded') {
-                        setTimeout(() => {
-                            this.statusElement.style.opacity = '0';
-                            setTimeout(() => {
-                                this.statusElement.style.display = 'none';
-                            }, 300);
-                        }, 3000);
-                    }
+                if (!this.statusElement) return;
+                this.statusElement.textContent = message;
+                this.statusElement.className = `analytics-status ${type}`;
+                if (type === 'loaded') {
+                    setTimeout(() => {
+                        this.statusElement.style.opacity = '0';
+                        setTimeout(() => this.statusElement.style.display = 'none', 300);
+                    }, 3000);
                 }
             }
 
             async loadGoogleAnalytics() {
-                if (!this.measurementId) {
-                    this.updateStatus('🔧 Development Mode', 'default');
-                    return false;
-                }
-
+                if (!this.measurementId) { this.updateStatus('🔧 Development Mode', 'default'); return false; }
                 try {
-                    // Load gtag script
                     const script = document.createElement('script');
                     script.async = true;
                     script.src = `https://www.googletagmanager.com/gtag/js?id=${this.measurementId}`;
                     document.head.appendChild(script);
-
-                    // Initialize gtag
                     window.dataLayer = window.dataLayer || [];
                     function gtag(){dataLayer.push(arguments);}
                     gtag('js', new Date());
                     gtag('config', this.measurementId);
-
-                    // Make gtag globally available
                     window.gtag = gtag;
-
                     this.isLoaded = true;
                     this.updateStatus('✅ Analytics Active', 'loaded');
-                    
-                    // Send initial page view
                     this.trackEvent('page_view', 'engagement', 'initial_load');
-                    
                     return true;
-                } catch (error) {
-                    console.error('Failed to load Google Analytics:', error);
+                } catch(e) {
                     this.updateStatus('❌ Analytics Failed', 'error');
                     return false;
                 }
@@ -1137,388 +1086,213 @@
 
             trackEvent(action, category, label) {
                 if (this.isLoaded && window.gtag) {
-                    window.gtag('event', action, {
-                        event_category: category,
-                        event_label: label,
-                        page_title: document.title,
-                        page_location: window.location.href
-                    });
-                    console.log(`📊 Event tracked: ${action} | ${category} | ${label}`);
-                } else {
-                    console.log(`📊 Event would be tracked: ${action} | ${category} | ${label}`);
+                    window.gtag('event', action, { event_category: category, event_label: label,
+                        page_title: document.title, page_location: window.location.href });
                 }
+                console.log(`📊 ${action} | ${category} | ${label}`);
             }
         }
 
-        // Initialize analytics
         const analytics = new AnalyticsConfig();
-        
-        // Global trackEvent function for onclick handlers
-        function trackEvent(action, category, label) {
-            analytics.trackEvent(action, category, label);
-        }
+        function trackEvent(action, category, label) { analytics.trackEvent(action, category, label); }
 
-        // Navigation function
+        // ═══════════════════════════════════════════════════════
+        //  Navigation
+        // ═══════════════════════════════════════════════════════
         function showSection(sectionId) {
-            // Hide all sections
-            const sections = document.querySelectorAll('.section');
-            sections.forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Remove active class from all nav buttons
-            const navButtons = document.querySelectorAll('.nav-btn');
-            navButtons.forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // Show the selected section
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(sectionId).classList.add('active');
-            
-            // Add active class to the clicked button
             event.target.classList.add('active');
-            
-            // Scroll to top smoothly
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Initialize everything when DOM is loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            analytics.loadGoogleAnalytics();
-            
-            // Track how long user stays on page
-            let startTime = Date.now();
-            window.addEventListener('beforeunload', () => {
-                const timeSpent = Math.round((Date.now() - startTime) / 1000);
-                analytics.trackEvent('timing_complete', 'engagement', `${timeSpent}_seconds`);
-            });
-        });
+        // ═══════════════════════════════════════════════════════
+        //  Smart Phone Number
+        //  India  → +91 9818155639
+        //  Others → +1 571 337 0488  (US / default)
+        // ═══════════════════════════════════════════════════════
+        function applySmartPhone(region) {
+            const phoneEl  = document.getElementById('smart-phone');
+            const textEl   = document.getElementById('phone-number-text');
+            if (!phoneEl || !textEl) return;
 
-        // Track scroll depth
-        let maxScroll = 0;
-        window.addEventListener('scroll', () => {
-            const scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
-            if (scrollPercent > maxScroll) {
-                maxScroll = scrollPercent;
-                if (maxScroll % 25 === 0) { // Track at 25%, 50%, 75%, 100%
-                    analytics.trackEvent('scroll', 'engagement', `${maxScroll}_percent`);
-                }
+            if (region === 'india') {
+                phoneEl.href     = 'tel:+919818155639';
+                textEl.textContent = '+91 9818155639';
+                trackEvent('smart_phone', 'detection', 'india_shown');
+            } else {
+                phoneEl.href     = 'tel:+15713370488';
+                textEl.textContent = '+1 571 337 0488';
+                trackEvent('smart_phone', 'detection', 'us_shown');
             }
-        });
+        }
 
-        class SmartResumeDetector {
+        // ═══════════════════════════════════════════════════════
+        //  Smart Resume + Phone Detector
+        // ═══════════════════════════════════════════════════════
+        class SmartDetector {
             constructor() {
                 this.detectionMethods = [];
-                this.recommendation = null;
-                this.confidence = 0;
+                this.recommendation   = null;
+                this.confidence       = 0;
             }
 
-            async detectOptimalResume() {
+            async detect() {
                 const indicator = document.getElementById('resume-indicator');
-                
                 try {
-                    // Method 1: Timezone Analysis (Most reliable)
                     this.analyzeTimezone();
-                    
-                    // Method 2: Language Preferences
                     this.analyzeLanguage();
-                    
-                    // Method 3: URL Hints and Referrer
                     this.analyzeURLContext();
-                    
-                    // Method 4: Browser/System Hints
                     this.analyzeSystemHints();
-                    
-                    // Make final recommendation
+
                     this.recommendation = this.calculateRecommendation();
-                    
-                    // Apply recommendation to UI
+
+                    // Apply to BOTH resume buttons and phone number
                     this.applyRecommendation();
-                    
-                    // Update indicator
+                    applySmartPhone(this.recommendation.type);
+
                     this.updateIndicator(indicator, true);
-                    
-                    // Track analytics
                     this.trackDetection();
-                    
-                } catch (error) {
-                    console.warn('Resume detection failed:', error);
+                } catch(e) {
+                    console.warn('Detection failed:', e);
                     this.handleFallback(indicator);
                 }
             }
 
             analyzeTimezone() {
                 try {
-                    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-                    console.log('🌍 Detected timezone:', timezone);
-                    
-                    // UK and Ireland timezones
-                    const ukTimezones = [
-                        'Europe/London',
-                        'Europe/Dublin',
-                        'Europe/Belfast',
-                        'GB',
-                        'GB-Eire'
-                    ];
-                    
-                    // India timezones
-                    const indiaTimezones = [
-                        'Asia/Kolkata',
-                        'Asia/Calcutta',
-                        'Asia/Colombo'
-                    ];
-                    
-                    if (ukTimezones.some(tz => timezone.includes(tz))) {
-                        this.detectionMethods.push({
-                            method: 'timezone',
-                            result: 'uk',
-                            confidence: 0.8,
-                            details: timezone
-                        });
-                    } else if (indiaTimezones.some(tz => timezone.includes(tz))) {
-                        this.detectionMethods.push({
-                            method: 'timezone',
-                            result: 'india',
-                            confidence: 0.8,
-                            details: timezone
-                        });
-                    }
-                } catch (error) {
-                    console.warn('Timezone detection failed:', error);
-                }
+                    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                    const ukZones     = ['Europe/London','Europe/Dublin','Europe/Belfast','GB','GB-Eire'];
+                    const indiaZones  = ['Asia/Kolkata','Asia/Calcutta','Asia/Colombo'];
+                    if (ukZones.some(z => tz.includes(z)))
+                        this.detectionMethods.push({ method:'timezone', result:'uk',    confidence:0.8, details:tz });
+                    else if (indiaZones.some(z => tz.includes(z)))
+                        this.detectionMethods.push({ method:'timezone', result:'india', confidence:0.8, details:tz });
+                } catch(e) {}
             }
 
             analyzeLanguage() {
                 try {
-                    const languages = [
-                        navigator.language,
-                        ...(navigator.languages || [])
-                    ].filter(Boolean);
-                    
-                    console.log('🗣️ Detected languages:', languages);
-                    
-                    const hasUKEnglish = languages.some(lang => 
-                        lang === 'en-GB' || lang.startsWith('en-GB')
-                    );
-                    
-                    const hasIndianLanguage = languages.some(lang => 
-                        lang === 'en-IN' || lang.startsWith('en-IN') || 
-                        lang === 'hi' || lang.startsWith('hi') ||
-                        lang === 'hi-IN'
-                    );
-                    
-                    if (hasUKEnglish) {
-                        this.detectionMethods.push({
-                            method: 'language',
-                            result: 'uk',
-                            confidence: 0.6,
-                            details: languages[0]
-                        });
-                    } else if (hasIndianLanguage) {
-                        this.detectionMethods.push({
-                            method: 'language',
-                            result: 'india',
-                            confidence: 0.6,
-                            details: languages[0]
-                        });
-                    }
-                } catch (error) {
-                    console.warn('Language detection failed:', error);
-                }
+                    const langs = [navigator.language, ...(navigator.languages||[])].filter(Boolean);
+                    const hasUK    = langs.some(l => l === 'en-GB' || l.startsWith('en-GB'));
+                    const hasIndia = langs.some(l => ['en-IN','hi','hi-IN'].some(x => l === x || l.startsWith(x)));
+                    if (hasUK)    this.detectionMethods.push({ method:'language', result:'uk',    confidence:0.6, details:langs[0] });
+                    else if (hasIndia) this.detectionMethods.push({ method:'language', result:'india', confidence:0.6, details:langs[0] });
+                } catch(e) {}
             }
 
             analyzeURLContext() {
                 try {
-                    const url = new URL(window.location.href);
+                    const url      = new URL(window.location.href);
                     const referrer = document.referrer;
-                    
-                    // Check URL parameters
-                    const region = url.searchParams.get('region');
-                    if (region === 'uk' || url.searchParams.get('uk') === 'true') {
-                        this.detectionMethods.push({
-                            method: 'url_param',
-                            result: 'uk',
-                            confidence: 0.9,
-                            details: 'URL parameter'
-                        });
-                    } else if (region === 'india' || url.searchParams.get('india') === 'true') {
-                        this.detectionMethods.push({
-                            method: 'url_param',
-                            result: 'india',
-                            confidence: 0.9,
-                            details: 'URL parameter'
-                        });
-                    }
-                    
-                    // Check referrer domain
+                    const region   = url.searchParams.get('region');
+
+                    if (region === 'uk'    || url.searchParams.get('uk')    === 'true')
+                        this.detectionMethods.push({ method:'url_param', result:'uk',    confidence:0.9, details:'URL param' });
+                    else if (region === 'india' || url.searchParams.get('india') === 'true')
+                        this.detectionMethods.push({ method:'url_param', result:'india', confidence:0.9, details:'URL param' });
+
                     if (referrer) {
-                        if (referrer.includes('.uk')) {
-                            this.detectionMethods.push({
-                                method: 'referrer',
-                                result: 'uk',
-                                confidence: 0.4,
-                                details: 'UK domain referrer'
-                            });
-                        } else if (referrer.includes('.in')) {
-                            this.detectionMethods.push({
-                                method: 'referrer',
-                                result: 'india',
-                                confidence: 0.4,
-                                details: 'India domain referrer'
-                            });
-                        }
+                        if (referrer.includes('.uk'))
+                            this.detectionMethods.push({ method:'referrer', result:'uk',    confidence:0.4, details:'UK domain' });
+                        else if (referrer.includes('.in'))
+                            this.detectionMethods.push({ method:'referrer', result:'india', confidence:0.4, details:'IN domain' });
                     }
-                } catch (error) {
-                    console.warn('URL context analysis failed:', error);
-                }
+                } catch(e) {}
             }
 
             analyzeSystemHints() {
                 try {
-                    // Check for region-specific system settings
-                    const dateFormat = new Intl.DateTimeFormat().format(new Date());
-                    const numberFormat = new Intl.NumberFormat().format(1234.56);
-                    
-                    // Both UK and India typically use DD/MM/YYYY
-                    // This is a weaker signal, but can support other evidence
-                    if (dateFormat.match(/^\d{1,2}\/\d{1,2}\/\d{4}$/)) {
-                        // Check if using Indian number format (lakhs/crores system)
-                        const locale = new Intl.NumberFormat().resolvedOptions().locale;
-                        
-                        if (locale.includes('en-IN') || locale.includes('hi')) {
-                            this.detectionMethods.push({
-                                method: 'system_format',
-                                result: 'india',
-                                confidence: 0.3,
-                                details: `Locale: ${locale}`
-                            });
-                        } else if (locale.includes('en-GB')) {
-                            this.detectionMethods.push({
-                                method: 'system_format',
-                                result: 'uk',
-                                confidence: 0.3,
-                                details: `Locale: ${locale}`
-                            });
-                        }
-                    }
-                } catch (error) {
-                    console.warn('System hints analysis failed:', error);
-                }
+                    const locale = new Intl.NumberFormat().resolvedOptions().locale;
+                    if (locale.includes('en-IN') || locale.includes('hi'))
+                        this.detectionMethods.push({ method:'system_format', result:'india', confidence:0.3, details:`Locale:${locale}` });
+                    else if (locale.includes('en-GB'))
+                        this.detectionMethods.push({ method:'system_format', result:'uk',    confidence:0.3, details:`Locale:${locale}` });
+                } catch(e) {}
             }
 
             calculateRecommendation() {
-                if (this.detectionMethods.length === 0) {
-                    return { type: 'india', confidence: 0, method: 'default_fallback' };
-                }
-
-                // Weight and sum confidence scores
-                const ukScore = this.detectionMethods
-                    .filter(m => m.result === 'uk')
-                    .reduce((sum, m) => sum + m.confidence, 0);
-                    
-                const indiaScore = this.detectionMethods
-                    .filter(m => m.result === 'india')
-                    .reduce((sum, m) => sum + m.confidence, 0);
-
-                console.log('📊 Detection scores - UK:', ukScore, 'India:', indiaScore);
-
-                if (ukScore > indiaScore && ukScore > 0.4) {
-                    return { 
-                        type: 'uk', 
-                        confidence: ukScore,
-                        method: this.detectionMethods.find(m => m.result === 'uk').method
-                    };
-                } else if (indiaScore > 0.3) {
-                    return { 
-                        type: 'india', 
-                        confidence: indiaScore,
-                        method: this.detectionMethods.find(m => m.result === 'india').method
-                    };
-                } else {
-                    return { type: 'india', confidence: 0, method: 'low_confidence_fallback' };
-                }
+                if (!this.detectionMethods.length) return { type:'india', confidence:0, method:'default_fallback' };
+                const ukScore    = this.detectionMethods.filter(m => m.result==='uk').reduce((s,m) => s+m.confidence, 0);
+                const indiaScore = this.detectionMethods.filter(m => m.result==='india').reduce((s,m) => s+m.confidence, 0);
+                if (ukScore > indiaScore && ukScore > 0.4)
+                    return { type:'uk',    confidence:ukScore,    method: this.detectionMethods.find(m=>m.result==='uk').method };
+                if (indiaScore > 0.3)
+                    return { type:'india', confidence:indiaScore, method: this.detectionMethods.find(m=>m.result==='india').method };
+                return { type:'india', confidence:0, method:'low_confidence_fallback' };
             }
 
             applyRecommendation() {
                 const indiaBtn = document.querySelector('[data-resume-type="india"]');
-                const ukBtn = document.querySelector('[data-resume-type="uk"]');
-                
+                const ukBtn    = document.querySelector('[data-resume-type="uk"]');
                 if (!indiaBtn || !ukBtn) return;
-
-                // Remove any existing recommendations
                 indiaBtn.classList.remove('recommended');
                 ukBtn.classList.remove('recommended');
-
-                // Apply recommendation
                 if (this.recommendation.type === 'uk') {
                     ukBtn.classList.add('recommended');
-                    // Move to front
                     ukBtn.parentNode.insertBefore(ukBtn, indiaBtn);
                 } else {
                     indiaBtn.classList.add('recommended');
-                    // Ensure India is first
                     indiaBtn.parentNode.insertBefore(indiaBtn, ukBtn);
                 }
-
-                console.log(`✅ Recommended: ${this.recommendation.type.toUpperCase()} resume (${this.recommendation.method})`);
             }
 
             updateIndicator(indicator, success) {
                 if (!indicator) return;
-
                 if (success && this.recommendation) {
-                    const methodName = this.recommendation.method.replace('_', ' ');
-                    const confidenceText = this.recommendation.confidence > 0.6 ? 'high confidence' : 
-                                        this.recommendation.confidence > 0.3 ? 'medium confidence' : 'low confidence';
-                    
-                    const regionName = this.recommendation.type === 'india' ? 'India' : 'UK';
-                    indicator.innerHTML = `✨ Recommended ${regionName} format (detected via ${methodName}, ${confidenceText})`;
+                    const conf   = this.recommendation.confidence > 0.6 ? 'high confidence' : this.recommendation.confidence > 0.3 ? 'medium confidence' : 'low confidence';
+                    const region = this.recommendation.type === 'india' ? 'India' : 'UK';
+                    const method = this.recommendation.method.replace(/_/g,' ');
+                    indicator.innerHTML = `✨ Recommended ${region} format (detected via ${method}, ${conf})`;
                     indicator.className = 'resume-smart-indicator success';
-                    
-                    // Hide after 4 seconds
-                    setTimeout(() => {
-                        indicator.style.opacity = '0';
-                        setTimeout(() => indicator.style.display = 'none', 300);
-                    }, 4000);
+                    setTimeout(() => { indicator.style.opacity='0'; setTimeout(()=>indicator.style.display='none',300); }, 4000);
                 } else {
-                    indicator.innerHTML = '⚡ Both formats available - choose based on your region';
+                    indicator.innerHTML = '⚡ Both formats available – choose based on your region';
                     indicator.className = 'resume-smart-indicator fallback';
                 }
             }
 
             handleFallback(indicator) {
-                console.log('🔄 Using fallback: India resume default');
-                this.recommendation = { type: 'india', confidence: 0, method: 'error_fallback' };
+                this.recommendation = { type:'india', confidence:0, method:'error_fallback' };
                 this.applyRecommendation();
+                applySmartPhone('india');
                 this.updateIndicator(indicator, false);
                 this.trackDetection();
             }
 
             trackDetection() {
-                if (window.analytics && window.analytics.trackEvent) {
-                    // Track the recommendation
-                    analytics.trackEvent('smart_resume', 'recommendation', 
-                        `${this.recommendation.type}_${this.recommendation.method}_${this.recommendation.confidence.toFixed(2)}`);
-                    
-                    // Track all detection methods used
-                    this.detectionMethods.forEach(method => {
-                        analytics.trackEvent('smart_resume', 'detection_method', 
-                            `${method.method}_${method.result}_${method.confidence.toFixed(2)}`);
-                    });
-                }
+                trackEvent('smart_detect','recommendation',
+                    `${this.recommendation.type}_${this.recommendation.method}_${this.recommendation.confidence.toFixed(2)}`);
+                this.detectionMethods.forEach(m =>
+                    trackEvent('smart_detect','method', `${m.method}_${m.result}_${m.confidence.toFixed(2)}`));
             }
         }
 
-        // Initialize smart resume detection when page loads
+        // ═══════════════════════════════════════════════════════
+        //  Initialise on DOM ready
+        // ═══════════════════════════════════════════════════════
         document.addEventListener('DOMContentLoaded', () => {
-            // Small delay to ensure analytics is loaded
-            setTimeout(() => {
-                const detector = new SmartResumeDetector();
-                detector.detectOptimalResume();
-            }, 500);
+            analytics.loadGoogleAnalytics();
+
+            // Engagement timer
+            const startTime = Date.now();
+            window.addEventListener('beforeunload', () => {
+                analytics.trackEvent('timing_complete','engagement',`${Math.round((Date.now()-startTime)/1000)}_seconds`);
+            });
+
+            // Run detection after a short pause so analytics is ready
+            setTimeout(() => { new SmartDetector().detect(); }, 500);
+        });
+
+        // Scroll depth tracking
+        let maxScroll = 0;
+        window.addEventListener('scroll', () => {
+            const pct = Math.round((window.scrollY/(document.body.scrollHeight-window.innerHeight))*100);
+            if (pct > maxScroll) {
+                maxScroll = pct;
+                if (maxScroll % 25 === 0) trackEvent('scroll','engagement',`${maxScroll}_percent`);
+            }
         });
     </script>
 </body>
