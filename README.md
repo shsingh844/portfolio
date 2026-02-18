@@ -29,11 +29,11 @@ The portfolio automatically detects whether a visitor is based in India or elsew
 
 **India visitors see:**
 - 🇮🇳 India-optimised resume download
-- Indian phone number (`+91 9818155639`)
+- Indian phone number
 
 **All other visitors see:**
 - 🇬🇧 UK / international resume download
-- US phone number (`+1 571 337 0488`)
+- US phone number
 
 ### Profile Photo
 Profile photo hosted on Cloudinary — keeps the GitHub repository free of binary assets. Falls back gracefully to initials (`SS`) if the image fails to load.
